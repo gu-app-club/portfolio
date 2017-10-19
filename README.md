@@ -30,7 +30,7 @@ cd gu-port
 
 To run both at once, you can use the start script. In your vagrant environment, run:
 ``` bash
-sudo sh ./start.sh
+start
 ```
 
 ### Backend

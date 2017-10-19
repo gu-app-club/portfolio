@@ -40,7 +40,7 @@ echo '-----> Configuring NPM'
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
 
 echo '-----> Removing ^M line-endings'
-find . -type f -print0 | xargs -0 -n 1 -P 4 dos2unix 
+dos2unix ~/gu-port/vagrant/setup.sh 
 
 echo '-----> Installing golang'
 wget -q https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz
@@ -57,6 +57,9 @@ echo '-----> Installing go dependencies'
 
 echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
 
+echo '-----> Adding aliases' 
+echo "alias start='sudo sh ~/gu-port/scripts/start.sh'" >> ~/.bashrc
+
 echo '-----> Initialising MySQL database'
 # Re-enable blank password root logins, which are disabled by default in MySQL 5.7.
 sudo mysql -e 'ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY ""';
@@ -71,5 +74,8 @@ mysql -u root gu_port_dev < $SRC_DIR/vagrant/gu-port-dev.sql
 
 echo '-----> Installing npm dependencies'
 cd ./frontend && yarn install
+
+echo '-----> Move to gu-port'
+cd ~/gu-port 
 
 echo '-----> Setup complete!'
