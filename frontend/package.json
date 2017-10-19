@@ -1,0 +1,34 @@
+{
+  "name": "gu-port",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "bulma": "^0.6.0",
+    "feather-icons": "^3.3.0",
+    "next": "^4.0.4",
+    "prop-types": "^15.6.0",
+    "query-string": "^5.0.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-markdown": "^2.5.0",
+    "react-modal": "^3.0.3",
+    "read-blob": "^1.1.0",
+    "styled-components": "^2.2.1",
+    "url-parse": "^1.1.9",
+    "yarn": "^1.2.1"
+  },
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "lint": "./node_modules/.bin/eslint src pages"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-inline-react-svg": "^0.4.0",
+    "eslint": "^4.9.0",
+    "eslint-plugin-react": "^7.4.0"
+  }
+}
