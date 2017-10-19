@@ -27,7 +27,11 @@ In the Vagrant environment move into the project folder. This is a shared direct
 cd gu-port
 ```
 ## Running the Backend and Frontend
-To run the Backend and Frontend, open two Vagrant environments (just open two terminals and `vagrant ssh` in both).
+
+To run both at once, you can use the start script. In your vagrant environment, run:
+``` bash
+sudo sh ./start.sh
+```
 
 ### Backend
 Once in a Vagrant environment move into the backend directory.
