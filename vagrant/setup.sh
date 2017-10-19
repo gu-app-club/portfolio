@@ -28,12 +28,16 @@ sudo -E apt-get -yqq install --no-install-recommends \
     libmysqlclient-dev \
     mysql-server-5.7 \
     nodejs \
+    dos2unix \
 
 sudo npm update -g npm
 sudo npm install -g yarn
 
 echo '-----> Configuring NPM'
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
+
+echo '-----> Removing line-endings'
+find . -type f -print0 | xargs -0 -n 1 -P 4 dos2unix 
 
 echo '-----> Installing golang'
 wget -q https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz
