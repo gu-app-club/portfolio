@@ -33,10 +33,13 @@ sudo -E apt-get -yqq install --no-install-recommends \
 sudo npm update -g npm
 sudo npm install -g yarn
 
+echo '-----> Configuring Git 2.0'
+git config --global push.default simple
+
 echo '-----> Configuring NPM'
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
 
-echo '-----> Removing line-endings'
+echo '-----> Removing ^M line-endings'
 find . -type f -print0 | xargs -0 -n 1 -P 4 dos2unix 
 
 echo '-----> Installing golang'
