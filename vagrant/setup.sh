@@ -60,6 +60,9 @@ echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
 echo '-----> Adding aliases' 
 echo "alias start='sudo sh ~/gu-port/scripts/start.sh'" >> ~/.bashrc
 
+echo '-----> Adding Doggo 🐶'
+echo "sh ~/gu-port/scripts/doggo.sh" >> ~/.bashrc
+
 echo '-----> Initialising MySQL database'
 # Re-enable blank password root logins, which are disabled by default in MySQL 5.7.
 sudo mysql -e 'ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY ""';
