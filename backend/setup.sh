@@ -8,6 +8,7 @@ go get github.com/stretchr/testify/assert;
 go get github.com/siddontang/go-mysql/client;
 go get github.com/gorilla/mux;
 go get golang.org/x/crypto/bcrypt;
+go get github.com/gorilla/handlers;
 
 ## Be friendly and say goodbye
 echo "🤖 - Okay human-friend, all done. ✨";

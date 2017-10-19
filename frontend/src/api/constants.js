@@ -5,7 +5,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const USER_ROUTE = "/users";
+const REGISTER_ROUTE = "/register";
 const PAGE_ROUTE = "/pages";
 const PAGE_LIST_ROUTE = "/pages";
 
-export { BASE_URL, USER_ROUTE, PAGE_ROUTE, PAGE_LIST_ROUTE };
+export { BASE_URL, USER_ROUTE, PAGE_ROUTE, REGISTER_ROUTE, PAGE_LIST_ROUTE };
