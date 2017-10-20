@@ -40,7 +40,8 @@ echo '-----> Configuring NPM'
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
 
 echo '-----> Removing ^M line-endings'
-dos2unix ~/gu-port/vagrant/setup.sh 
+dos2unix ~/gu-port/backend/setup.sh 
+dos2unix ~/gu-port/backend/build.sh 
 
 echo '-----> Installing golang'
 wget -q https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz
