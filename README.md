@@ -1,4 +1,4 @@
-# gu-port
+# portfolio
 
 ## Before you get going
 Make sure you have installed [Vagrant](https://www.vagrantup.com/docs/installation/) and [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
