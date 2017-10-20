@@ -8,7 +8,7 @@ If you have the dependencies for this project, pop open a terminal (`ctrl-alt-t`
 Download the project:
 ```bash
 git clone https://github.com/maxchehab/gu-port.git
-cd gu-port
+cd portfolio
 ```
 Using Vagrant, build the development environment (this will not work if you dont have [Vagrant](https://www.vagrantup.com/docs/installation/) and [Virtual Box](https://www.virtualbox.org/wiki/Downloads) installed).
 
