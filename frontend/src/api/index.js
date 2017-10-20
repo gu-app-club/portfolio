@@ -6,6 +6,7 @@ import {
   PAGE_ROUTE,
   PAGE_LIST_ROUTE
 } from "./constants";
+import querystring from "querystring";
 
 function getPage(userID, pageID) {
   return axios.get(
@@ -17,13 +18,15 @@ function getPageList(count, offset) {
   return axios.get(BASE_URL + PAGE_LIST_ROUTE + `/${count}` + `/${offset}`);
 }
 
-function postRegister(access_code, email, password, username) {
-  return axios.post(BASE_URL + REGISTER_ROUTE, {
-    access_code,
+function postRegister(accessCode, email, password, username) {
+  const urlEncodedData = querystring.stringify({
+    accessCode,
     email,
     password,
     username
   });
+
+  return axios.post(BASE_URL + REGISTER_ROUTE, urlEncodedData);
 }
 
 // function postPageList(name, body) {

@@ -19,7 +19,6 @@ if [[ ! -f /etc/apt/sources.list.d/nodesource.list ]]; then
     echo 'deb https://deb.nodesource.com/node_7.x xenial main' | sudo tee /etc/apt/sources.list.d/nodesource.list > /dev/null
 fi
 
-
 echo '-----> Installing/updating APT packages'
 sudo -E apt-get -yqq update
 sudo -E apt-get -yqq install --no-install-recommends \
@@ -77,7 +76,10 @@ mysql -u root gu_port_testing < $SRC_DIR/vagrant/gu-port-testing.sql
 mysql -u root gu_port_dev < $SRC_DIR/vagrant/gu-port-dev.sql
 
 echo '-----> Installing npm dependencies'
-cd ./frontend && yarn install
+cd ./frontend
+sudo yarn autoclean
+sudo yarn install
+cd ~
 
 echo '-----> Move to gu-port'
 cd ~/gu-port 
