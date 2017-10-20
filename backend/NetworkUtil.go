@@ -2,16 +2,18 @@ package main
 
 import (
 	"errors"
-	"github.com/siddontang/go-mysql/client"
+	"fmt"
 	"os/exec"
 	"strconv"
+
+	"github.com/siddontang/go-mysql/client"
 )
 
 /*********************
  * Standard way to connect to an SQL database.
  *********************/
 func SQLConnect(testing bool) (*client.Conn, error) {
-	if testing{
+	if testing {
 		return client.Connect(SQLURL, SQLUSER, SQLPASS, TEST_DBNAME) // url, user, pass, db
 	}
 	return client.Connect(SQLURL, SQLUSER, SQLPASS, DBNAME) // url, user, pass, db
@@ -116,22 +118,21 @@ func Register(conn *client.Conn, username string, email string, accessCode strin
  * This new session is returned.
  *********************/
 func Login(conn *client.Conn, key string, password string) (bool, string, error) {
-	query := `SELECT userID, password, session FROM users WHERE username='` + key + `' OR email='` + key + `'`
+	query := `SELECT userID, password, session FROM users WHERE username='` + key + `' OR email='` + key + ` LIMIT 1'`
 	results, err := conn.Execute(query)
 	if err != nil {
 		return false, "", err
 	}
 
 	userID := int64(-1)
-	for i := 0; i < len(results.Values); i++ {
-		hashedPassword, _ := results.GetString(i, 1)
-		session, _ := results.GetString(i, 2)
+	hashedPassword, _ := results.GetString(0, 1)
+	session, _ := results.GetString(0, 2)
 
-		if CompareHash(hashedPassword, password) || session == password {
-			userID, _ = results.GetInt(i, 0)
-			break
-		}
+	if CompareHash(hashedPassword, password) || session == password {
+		userID, _ = results.GetInt(0, 0)
 	}
+
+	fmt.Println(userID, key)
 
 	if userID >= 0 {
 		session_b, err := exec.Command("uuidgen").Output()

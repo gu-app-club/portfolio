@@ -1,7 +1,8 @@
-import Link from "next/link";
 import Title from "./Title";
 import api from "../api";
 import styled from "styled-components";
+import HomeButton from "./HomeButton";
+import changeByName from "../util/changeByName";
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -23,9 +24,7 @@ class Register extends React.Component {
   }
 
   onChange(event) {
-    const change = {};
-    change[event.target.name] = event.target.value;
-    this.setState(change);
+    changeByName(this, event);
   }
 
   onSubmit() {
@@ -55,9 +54,7 @@ class Register extends React.Component {
         <input type="text" name="access_code" onChange={this.onChange} />
 
         <button onClick={this.onSubmit}> Submit </button>
-        <Link href="/" prefetch>
-          <button className="button button-clear"> Cancel </button>
-        </Link>
+        <HomeButton> Cancel </HomeButton>
       </AppWrapper>
     );
   }

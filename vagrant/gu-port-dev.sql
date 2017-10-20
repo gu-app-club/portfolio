@@ -88,6 +88,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`userID`, `username`, `email`, `access_code`, `password`, `session`) VALUES
 (13, 'test', 'test@gmail.com', 'test', 'test', ''),
+(0, 'dev', 'dev@gmail.com', 'dev', '$2a$10$2M2nekWKNY02bR2pGHu3xOK.P8zdN/fxyRK989heFyyuILIDPpqpK', ''),
 (16, 'atalhassan', 'atalhassan@gmail.com', 'unique', '$2a$10$T9uUgsyiUsOwAg/So0rHkeKhcYhZ23uVgflebUaK9EHZjqdmVUTZK', 'AC3188B6-76F8-4F23-8BC8-F9F1E4B1408C');
 
 --

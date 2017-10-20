@@ -2,6 +2,6 @@ import Link from "next/link";
 
 export default ({ children }) => (
   <Link href="/">
-    <button>{children}</button>
+    <button className="button button-clear">{children}</button>
   </Link>
 );
