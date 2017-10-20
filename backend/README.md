@@ -63,13 +63,13 @@ Access the api at localhost:8080
 `localhost:8080/register`
 Parameters:
 ```json
-access_code: {access_code}
+accessCode: {accessCode}
 email: {email}
 password: {password}
 username: {username}
 ```
 Body:
-`email={email}&username={username}&access_code={access_code}&password={password}`
+`email={email}&username={username}&accessCode={accessCode}&password={password}`
 #### Response:
 ```json
 {

@@ -114,6 +114,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
  *********************/
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
 	r.ParseForm()
 	key := r.Form.Get("key")
 	password := r.Form.Get("password")
@@ -141,6 +143,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
  *********************/
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	
 	r.ParseForm()
 
 	name := r.Form.Get("name")
