@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-	"regexp"
 
 	"golang.org/x/crypto/bcrypt"
 	"github.com/siddontang/go-mysql/client"
