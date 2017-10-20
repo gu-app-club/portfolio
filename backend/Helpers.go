@@ -8,6 +8,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 	"github.com/siddontang/go-mysql/client"
+	"github.com/goware/emailx"
 
 )
 
@@ -92,8 +93,8 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		params.Valid = false
 	}
 
-	Re := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
-	if !Re.MatchString(email) {
+	
+	if emailx.Validate(email) != nil {
 		params.Email.Valid = false
 		params.Email.Message = append(params.Email.Message, "Invalid email.")
 		params.Valid = false
