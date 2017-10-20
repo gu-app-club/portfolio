@@ -77,11 +77,13 @@ func BookHandler(w http.ResponseWriter, r *http.Request) {
  *********************/
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
 	r.ParseForm()
 	username := r.Form.Get("username")
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
-	accessCode := r.Form.Get("access_code")
+	accessCode := r.Form.Get("accessCode")
 
 	conn, err := SQLConnect(false)
 	if err != nil {
@@ -137,7 +139,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
  * UploadHandler recieves a username and session cookie and a name and body form.
  * It will fail if the user is not authenticated or if their is a MySQL error.
  *********************/
-func UploadHandler(w http.ResponseWriter, r *http.Request){
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	r.ParseForm()
 
@@ -162,13 +164,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request){
 		panic(err)
 	}
 
-
-
 	if valid {
 		err := AddPage(conn, username, name, body)
-		if err != nil{
+		if err != nil {
 			panic(err)
-		}else{
+		} else {
 			fmt.Fprintln(w, `{"session": "`+string(session)+`", "valid":true}`)
 		}
 	} else {
