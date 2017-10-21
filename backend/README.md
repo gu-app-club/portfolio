@@ -180,3 +180,13 @@ Body:
    "valid":false
 }
 ```
+### Page `GET`
+#### Request:
+`localhost:8080/access/new`
+#### Response:
+```json
+{
+    "accessCode": "lighterhelix",
+    "message": "Depreciate this API function before release!"
+}
+```

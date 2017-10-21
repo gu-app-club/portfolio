@@ -66,4 +66,11 @@ var routes = Routes{
 		"/pages/replace",
 		ReplaceHandler,
 	},
+	Route{
+		"AccessCodeHandler",
+		"GET",
+		"/access/new",
+		AccessCodeHandler,
+	},
+
 }

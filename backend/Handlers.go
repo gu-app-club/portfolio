@@ -62,7 +62,7 @@ func BookHandler(w http.ResponseWriter, r *http.Request) {
 
 	book, err := GetBook(conn, offset, count)
 	if err != nil {
-
+		panic(err)
 	} else if err := json.NewEncoder(w).Encode(book); err != nil {
 		panic(err)
 	}
@@ -232,4 +232,24 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, `{"valid":false}`)
 	}
 
+}
+
+/*********************
+ * AccessCodeHandler creates and returns a new access code. 
+ * THIS IS ONLY FOR DEVELOPMENT. DEPRECIATE!
+ *********************/
+ func AccessCodeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	conn, err := SQLConnect(false)
+	if err != nil {
+		panic(err)
+	}
+
+	accessCode, err := CreateAccessCode(conn)
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Fprintln(w, `{"accessCode": "` + accessCode + `", "message" : "Depreciate this API function before release!"}`)
+	}
 }

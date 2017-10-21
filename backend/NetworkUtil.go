@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os/exec"
 	"strconv"
-
+	"strings"
+	
 	"github.com/siddontang/go-mysql/client"
+	"github.com/Pallinder/go-randomdata"
 )
 
 /*********************
@@ -235,4 +237,14 @@ func GetUserID(conn *client.Conn, username string) (string, error) {
 	} else {
 		return "-1", nil
 	}
+}
+
+/*********************
+ * Creates and returns an AccessCode
+ *********************/
+ func CreateAccessCode(conn *client.Conn) (string, error) {
+	accessCode := strings.ToLower(randomdata.SillyName())
+	query := `INSERT INTO access_codes(access_code, valid) VALUES ('` + accessCode + `','1')`
+	_, err := conn.Execute(query)
+	return accessCode, err
 }
