@@ -60,4 +60,10 @@ var routes = Routes{
 		"/pages/new",
 		UploadHandler,
 	},
+	Route{
+		"ReplaceHandler",
+		"POST",
+		"/pages/replace",
+		ReplaceHandler,
+	},
 }

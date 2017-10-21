@@ -155,3 +155,28 @@ Body:
    "valid":false
 }
 ```
+### Replace `POST`
+#### Request:
+`localhost:8080/pages/replace`
+Parameters:
+```json
+Cookie: session={session|password}; username={username};
+
+name: {title}
+body: {body}
+pageID: {pageID}
+```
+Body:
+`pageID={pageID}&body={body}&name={name}`
+#### Response:
+```json
+{
+   "session":"{session}",
+   "valid":true
+}
+```
+```json
+{
+   "valid":false
+}
+```

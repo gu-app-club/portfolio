@@ -119,6 +119,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	key := r.Form.Get("key")
 	password := r.Form.Get("password")
+	fmt.Println("key: " + key + ", password: " + password)
 
 	conn, err := SQLConnect(false)
 	if err != nil {
@@ -150,11 +151,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.Form.Get("name")
 	body := r.Form.Get("body")
 	username_cookie, err := r.Cookie("username")
+	fmt.Println("lenght of cookies: " + strconv.Itoa(len(r.Cookies())))
+	
 	if err != nil {
 		panic(err)
 	}
 	username := username_cookie.Value
 	session_cookie, err := r.Cookie("session")
+	fmt.Println("printing session...")
+	
 	if err != nil {
 		panic(err)
 	}
@@ -170,6 +175,54 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	if valid {
 		err := AddPage(conn, username, name, body)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Fprintln(w, `{"session": "`+string(session)+`", "valid":true}`)
+		}
+	} else {
+		fmt.Fprintln(w, `{"valid":false}`)
+	}
+
+}
+
+/*********************
+ * Replace recieves a username and session cookie and a name and body form.
+ * It will fail if the user is not authenticated or if their is a MySQL error.
+ *********************/
+ func ReplaceHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	
+	r.ParseForm()
+
+	name := r.Form.Get("name")
+	body := r.Form.Get("body")
+	pageID := r.Form.Get("pageID")
+
+	username_cookie, err := r.Cookie("username")
+	if err != nil {
+		panic(err)
+	}
+
+	username := username_cookie.Value
+	session_cookie, err := r.Cookie("session")
+	if err != nil {
+		panic(err)
+	}
+
+	session := session_cookie.Value
+	conn, err := SQLConnect(false)
+	if err != nil {
+		panic(err)
+	}
+	valid, session, err := Login(conn, username, session)
+	if err != nil {
+		panic(err)
+	}
+
+	if valid {
+		err := UpdatePage(conn, username, name, body, pageID)
 		if err != nil {
 			panic(err)
 		} else {

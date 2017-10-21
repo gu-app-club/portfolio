@@ -128,11 +128,11 @@ func Login(conn *client.Conn, key string, password string) (bool, string, error)
 	hashedPassword, _ := results.GetString(0, 1)
 	session, _ := results.GetString(0, 2)
 
-	if CompareHash(hashedPassword, password) || session == password {
+	if len(results.Values) > 0 && (CompareHash(hashedPassword, password) || session == password) {
 		userID, _ = results.GetInt(0, 0)
 	}
 
-	fmt.Println(userID, key)
+	fmt.Println("userID: " + strconv.Itoa(int(userID)))
 
 	if userID >= 0 {
 		session_b, err := exec.Command("uuidgen").Output()
@@ -176,6 +176,24 @@ func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
 		return false, err
 	}
 	return (len(results.Values) > 0), nil
+}
+
+/*********************
+ * AddPage adds a page to a database.
+ *********************/
+
+ func UpdatePage(conn *client.Conn, username string, name string, body string, pageID string) error {
+	userID, err := GetUserID(conn, username)
+	if err != nil {
+		return err
+	} else if userID == "-1" {
+		return errors.New("Invalid userID {-1}")
+	}
+	
+	query := `UPDATE pages SET body='` + body + `', name='` + name + `' WHERE pageID='` + pageID + `' AND userID='` + userID + `'`
+	fmt.Println(query)
+	_, err = conn.Execute(query)
+	return err
 }
 
 /*********************

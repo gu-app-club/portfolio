@@ -105,7 +105,6 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		params.Valid = false
 	}
 
-	conn, err = SQLConnect(false)
 	if err != nil {
 		panic(err)
 	}
