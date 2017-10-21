@@ -180,7 +180,7 @@ Body:
    "valid":false
 }
 ```
-### Page `GET`
+### Create AccessCode `GET`
 #### Request:
 `localhost:8080/access/new`
 #### Response:
