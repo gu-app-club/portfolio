@@ -3,6 +3,7 @@ import HomeButton from "./HomeButton";
 import changeByName from "../util/changeByName";
 import api from "../api";
 import Cookies from "js-cookie";
+import Router from 'next/router';
 
 /**
  * Show this if we think the user has already been logged in
@@ -42,7 +43,15 @@ class Login extends React.Component {
         return 
       } 
 
+      // Login Success
       Cookies.set("session", data.session);
+
+      // If we're coming from somewhere, go back there
+      if (queryParams().back) {
+        Router.replace(queryParams().back);
+      } else {
+        Router.replace("/") // Otherwise just go home
+      }
     });
   }
 
