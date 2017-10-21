@@ -35,6 +35,8 @@ class Login extends React.Component {
   }
 
   onSubmit() {
+    Cookies.set("username", this.state.email)
+    
     api.postLogin(this.state.email, this.state.password).then(({data}) => {
       if (!data.valid) {
         console.error("Bad login:", data);

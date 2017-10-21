@@ -150,15 +150,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	name := r.Form.Get("name")
 	body := r.Form.Get("body")
-	username_cookie, err := r.Cookie("username")
-	fmt.Println("lenght of cookies: " + strconv.Itoa(len(r.Cookies())))
-	
+	fmt.Println("no username")
+	username_cookie, err := r.Cookie("username")	
 	if err != nil {
-		panic(err)
+		fmt.Fprintln(w, `{"valid":false}`)
+	//	panic(err)
 	}
 	username := username_cookie.Value
-	session_cookie, err := r.Cookie("session")
-	fmt.Println("printing session...")
+
+	session_cookie, err := r.Cookie("session")	
+	fmt.Println("no session")
 	
 	if err != nil {
 		panic(err)
@@ -166,16 +167,19 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	session := session_cookie.Value
 	conn, err := SQLConnect(false)
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)		
 		panic(err)
 	}
 	valid, session, err := Login(conn, username, session)
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)		
 		panic(err)
 	}
 
 	if valid {
 		err := AddPage(conn, username, name, body)
 		if err != nil {
+			fmt.Fprintln(w, `{"valid":false}`)			
 			panic(err)
 		} else {
 			fmt.Fprintln(w, `{"session": "`+string(session)+`", "valid":true}`)

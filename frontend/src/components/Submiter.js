@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Title from "./Title";
 import Link from "next/link";
 import readBlob from "read-blob";
+import api from "../api";
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -14,22 +15,33 @@ class SubmitForm extends React.Component {
     this.state = {
       disabled: true,
       reason: "",
-      uploadedText: ""
+      uploadedText: "",
+      title: "",
+      author: ""
     };
 
     this.onUserUpload = this.onUserUpload.bind(this);
     this.onUserSubmit = this.onUserSubmit.bind(this);
+    this.updateAuthorValue = this.updateAuthorValue.bind(this);
+    this.updateTitleValue = this.updateTitleValue.bind(this);
+    
   }
 
   onUserSubmit() {
-    console.log(this.state.uploadedText);
+    api.postUpload(this.state.title, this.state.uploadedText).then(({data}) => {
+      if(data.valid){
+        Cookies.set("session", data.session);        
+      }else{
+        //TODO error handling.
+      }
+    });
   }
 
   onUserUpload(event) {
     const file = event.target.files[0];
 
     // For the moment, only let the user upload markdown files
-    if (file.type !== "text/markdown") {
+    if (!file.name.endsWith("md")) {
       this.setState({
         disabled: true,
         reason:
@@ -44,19 +56,26 @@ class SubmitForm extends React.Component {
     });
   }
 
+  updateTitleValue(evt){
+    this.setState({title: evt.target.value});       
+  }
+  updateAuthorValue(evt){
+    this.setState({author: evt.target.value});       
+  }
+
   render() {
     return (
       <div>
         <label htmlFor="title"> Title </label>
-        <input type="text" placeholder="Super Cool iOS App" id="title" />
+        <input type="text" onChange={evt => this.updateTitleValue(evt)} placeholder="Super Cool iOS App" id="title" />
 
         <label htmlFor="author"> Author </label>
-        <input type="text" placeholder="George" id="author" />
+        <input type="text" onChange={evt => this.updateAuthorValue(evt)} placeholder="George" id="author" />
 
         <label htmlFor="file"> Markdown File </label>
         <input type="file" onChange={this.onUserUpload} />
 
-        <button disabled={this.state.disabled}> Submit </button>
+        <button onClick={this.onUserSubmit} disabled={this.state.disabled}> Submit </button>
         <Link href="/" prefetch>
           <button className="button button-clear"> Cancel </button>
         </Link>

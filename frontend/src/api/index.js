@@ -5,7 +5,8 @@ import {
   REGISTER_ROUTE,
   PAGE_ROUTE,
   PAGE_LIST_ROUTE,
-  LOGIN_ROUTE
+  LOGIN_ROUTE,
+  UPLOAD_ROUTE
 } from "./constants";
 import querystring from "querystring";
 
@@ -39,6 +40,16 @@ function postLogin(key, password) {
   return axios.post(BASE_URL + LOGIN_ROUTE, urlEncodedData);
 }
 
+/*Upload does not accept author.*/
+function postUpload(title, body) {
+  const urlEncodedData = querystring.stringify({
+    name,
+    body
+  });
+
+  return axios.post(BASE_URL + UPLOAD_ROUTE, urlEncodedData);
+}
+
 // function postPageList(name, body) {
 //   Cookies.set("session", "", { expires: 365 });
 
@@ -54,4 +65,4 @@ function postLogin(key, password) {
 //   );
 // }
 
-export default { getPage, getPageList, postRegister, postLogin };
+export default { getPage, getPageList, postRegister, postLogin, postUpload };
