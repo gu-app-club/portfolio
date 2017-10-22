@@ -37,13 +37,14 @@ class Login extends React.Component {
 
   onSubmit() {
     Cookies.set("username", this.state.email)
-    
+
     api.postLogin(this.state.email, this.state.password).then(({data}) => {
       if (!data.valid) {
         console.error("Bad login:", data);
         // TODO Tell the user something went wrong
-        return 
-      } 
+        alert("Invalid Credentials")
+        return
+      }
 
       // Login Success
       Cookies.set("session", data.session);

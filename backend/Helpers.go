@@ -92,7 +92,7 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		params.Valid = false
 	}
 
-	
+
 	if emailx.Validate(email) != nil {
 		params.Email.Valid = false
 		params.Email.Message = append(params.Email.Message, "Invalid email.")

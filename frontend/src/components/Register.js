@@ -35,7 +35,32 @@ class Register extends React.Component {
         this.state.password,
         this.state.name
       )
-      .then(console.log);
+      .then(({data}) => {
+        if (!data.valid) {
+          console.error("Bad register:", data);
+          // TODO Tell the user something went wrong
+          if (!data.username.valid) {
+            alert(data.username.message);
+          } else if (!data.email.valid) {
+            alert(data.email.message);
+          } else if (!data.password.valid) {
+            alert(data.password.message);
+          } else if (!data.accessCode.valid) {
+            alert(data.accessCode.message);
+          }
+          return
+        }
+
+        // Login Success
+        Cookies.set("session", data.session);
+
+        // If we're coming from somewhere, go back there
+        if (queryParams().back) {
+          Router.replace(queryParams().back);
+        } else {
+          Router.replace("/") // Otherwise just go home
+        }
+      });
   }
 
   render() {
