@@ -47,7 +47,11 @@ function postUpload(title, body) {
     body
   });
 
-  return axios.post(BASE_URL + UPLOAD_ROUTE, urlEncodedData);
+  return axios(BASE_URL + UPLOAD_ROUTE, {
+    method: "POST", 
+    data: urlEncodedData,
+    withCredentials: true 
+  });
 }
 
 // function postPageList(name, body) {
