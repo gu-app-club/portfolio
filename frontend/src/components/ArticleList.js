@@ -1,6 +1,8 @@
+import React from "react";
 import Article from "./Article";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { FadeInDown } from "./animations";
 
 class ArticleList extends React.Component {
   static propTypes = {
@@ -20,7 +22,9 @@ class ArticleList extends React.Component {
     }
 
     const articles = this.props.articles.map(props => (
-      <Article key={props.pageID} {...props} />
+      <FadeInDown duration="0.5s" key={`${props.pageID}-anime`}>
+        <Article key={props.pageID} {...props} />
+      </FadeInDown>
     ));
 
     return <div>{articles}</div>;
