@@ -4,6 +4,7 @@ import changeByName from "../util/changeByName";
 import api from "../api";
 import Cookies from "js-cookie";
 import Router from 'next/router';
+import Flash from "./Flash";
 
 /**
  * Show this if we think the user has already been logged in
@@ -23,7 +24,9 @@ class Login extends React.Component {
     this.state = {
       session: Cookies.get("session"),
       email: "",
-      password: ""
+      password: "",
+      errorMsg: "",
+      flashVisible: false
     };
 
     this.onLogOut = this.onLogOut.bind(this);
@@ -35,15 +38,19 @@ class Login extends React.Component {
     changeByName(this, event);
   }
 
-  onSubmit() {
+  onSubmit(e) {
+    e.preventDefault()
+    this.state.errorMsg = "";
+
     Cookies.set("username", this.state.email)
 
     api.postLogin(this.state.email, this.state.password).then(({data}) => {
       if (!data.valid) {
-        console.error("Bad login:", data);
-        // TODO Tell the user something went wrong
-        alert("Invalid Credentials")
-        return
+        this.setState({
+          errorMsg: "Email and Password does not match!!!",
+          flashVisible: true
+        });
+        return;
       }
 
       // Login Success
@@ -71,7 +78,12 @@ class Login extends React.Component {
     }
 
     return (
-      <div>
+      <form onSubmit={this.onSubmit}>
+        {
+          this.state.flashVisible
+            ? <Flash message={this.state.errorMsg}/>
+            : null
+        }
         <label htmlFor="email"> Email </label>
         <input
           type="email"
@@ -79,6 +91,7 @@ class Login extends React.Component {
           id="email"
           name="email"
           onChange={this.onChange}
+          required
         />
 
         <label htmlFor="password"> Password </label>
@@ -88,11 +101,12 @@ class Login extends React.Component {
           id="password"
           name="password"
           onChange={this.onChange}
+          required
         />
 
-        <button onClick={this.onSubmit}>Login</button>
+        <input type="submit" value="Login" />
         <HomeButton>Back</HomeButton>
-      </div>
+      </form>
     );
   }
 }
