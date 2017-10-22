@@ -3,6 +3,7 @@ import api from "../api";
 import styled from "styled-components";
 import HomeButton from "./HomeButton";
 import changeByName from "../util/changeByName";
+import Flash from "./Flash";
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -15,19 +16,22 @@ class Register extends React.Component {
       name: "",
       email: "",
       password: "",
-      access_code: ""
+      access_code: "",
+      errorMsg: "",
+      flashVisible: false
     };
-
-    this.state = {};
-    this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   onChange(event) {
     changeByName(this, event);
   }
 
-  onSubmit() {
+  onSubmit(e) {
+    e.preventDefault()
+    this.state.errorMsg = "";
+
     api
       .postRegister(
         this.state.access_code,
@@ -37,18 +41,30 @@ class Register extends React.Component {
       )
       .then(({data}) => {
         if (!data.valid) {
-          console.error("Bad register:", data);
-          // TODO Tell the user something went wrong
           if (!data.username.valid) {
-            alert(data.username.message);
-          } else if (!data.email.valid) {
-            alert(data.email.message);
-          } else if (!data.password.valid) {
-            alert(data.password.message);
-          } else if (!data.accessCode.valid) {
-            alert(data.accessCode.message);
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.username.message + " "
+            });
           }
-          return
+          if (!data.email.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.email.message + " "
+            });
+          }
+          if (!data.password.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.password.message + " "
+            });
+          }
+          if (!data.accessCode.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.accessCode.message + " "
+            });
+          }
+          this.setState({
+            flashVisible: true
+          })
+          return;
         }
 
         // Login Success
@@ -66,20 +82,27 @@ class Register extends React.Component {
   render() {
     return (
       <AppWrapper>
-        <label htmlFor="name"> Name </label>
-        <input type="text" id="name" name="name" onChange={this.onChange} />
+        {
+          this.state.flashVisible
+            ? <Flash message={this.state.errorMsg}/>
+            : null
+        }
+        <form onSubmit= {this.onSubmit}>
+          <label htmlFor="name"> Name </label>
+          <input type="text" id="name" name="name" onChange={this.onChange} required/>
 
-        <label htmlFor="email"> Email </label>
-        <input type="email" id="email" name="email" onChange={this.onChange} />
+          <label htmlFor="email"> Email </label>
+          <input type="email" id="email" name="email" onChange={this.onChange} required/>
 
-        <label htmlFor="password"> Password </label>
-        <input type="password" name="password" onChange={this.onChange} />
+          <label htmlFor="password"> Password </label>
+          <input type="password" name="password" onChange={this.onChange} required/>
 
-        <label htmlFor="acess"> Access Code </label>
-        <input type="text" name="access_code" onChange={this.onChange} />
+          <label htmlFor="acess"> Access Code </label>
+          <input type="text" name="access_code" onChange={this.onChange} required/>
 
-        <button onClick={this.onSubmit}> Submit </button>
-        <HomeButton> Cancel </HomeButton>
+          <input type="submit"  value="Register" />
+          <HomeButton> Cancel </HomeButton>
+        </form>
       </AppWrapper>
     );
   }

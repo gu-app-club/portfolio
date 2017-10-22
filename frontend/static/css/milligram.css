@@ -72,6 +72,36 @@ input[type="submit"]:hover {
   outline: 0;
 }
 
+.alert {
+padding: 8px 35px 8px 14px;
+margin-bottom: 18px;
+color: #c09853;
+text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+background-color: #fcf8e3;
+border: 1px solid #fbeed5;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+}
+
+.alert-heading {
+color: inherit;
+}
+
+.alert .close {
+position: relative;
+top: -2px;
+right: -21px;
+line-height: 18px;
+}
+
+.alert-danger,
+.alert-error {
+color: #b94a48;
+background-color: #f2dede;
+border-color: #eed3d7;
+}
+
 .button[disabled],
 button[disabled],
 input[type="button"][disabled],
