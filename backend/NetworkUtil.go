@@ -120,7 +120,7 @@ func Register(conn *client.Conn, username string, email string, accessCode strin
  * This new session is returned.
  *********************/
 func Login(conn *client.Conn, key string, password string) (bool, string, error) {
-	query := `SELECT userID, password, session FROM users WHERE username='` + key + `' OR email='` + key + ` LIMIT 1'`
+	query := `SELECT userID, password, session FROM users WHERE username='` + key + `' OR email='` + key + `' LIMIT 1`
 	results, err := conn.Execute(query)
 	if err != nil {
 		return false, "", err

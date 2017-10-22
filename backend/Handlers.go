@@ -150,18 +150,23 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	name := r.Form.Get("name")
 	body := r.Form.Get("body")
-	fmt.Println("no username")
+	
+	cookies := r.Cookies()
+	if(!ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session")){
+		fmt.Fprintln(w, `{"valid":false}`)
+		return		
+	}
+
 	username_cookie, err := r.Cookie("username")
 	if err != nil {
 		fmt.Fprintln(w, `{"valid":false}`)
-	//	panic(err)
+		panic(err)
 	}
 	username := username_cookie.Value
 
 	session_cookie, err := r.Cookie("session")
-	fmt.Println("no session")
-
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)		
 		panic(err)
 	}
 	session := session_cookie.Value

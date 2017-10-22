@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 	"github.com/siddontang/go-mysql/client"
@@ -50,6 +51,15 @@ func GenerateHash(password string) string {
 func CompareHash(hashedPassword string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return (err == nil)
+}
+
+func ContainsCookie(cookies []*http.Cookie, name string)(bool){
+	for _, cookie := range cookies {
+		if cookie.Name == name{
+			return true
+		}
+	}
+	return false
 }
 
 /*********************
