@@ -54,7 +54,7 @@ class Login extends React.Component {
       }
 
       // Login Success
-      Cookies.storeLoginDetails(data);
+      Cookies.storeLoginDetails({username: this.state.email, session : data.session });
 
       // If we're coming from somewhere, go back there
       if (queryParams().back) {
