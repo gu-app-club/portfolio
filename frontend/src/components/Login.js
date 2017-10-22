@@ -2,8 +2,8 @@ import queryParams from "../util/queryParams";
 import HomeButton from "./HomeButton";
 import changeByName from "../util/changeByName";
 import api from "../api";
-import Cookies from "js-cookie";
-import Router from 'next/router';
+import Cookies from "../lib/Cookies";
+import Router from "next/router";
 
 /**
  * Show this if we think the user has already been logged in
@@ -21,7 +21,7 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-      session: Cookies.get("session"),
+      session: "",
       email: "",
       password: ""
     };
@@ -36,23 +36,21 @@ class Login extends React.Component {
   }
 
   onSubmit() {
-    Cookies.set("username", this.state.email)
-    
-    api.postLogin(this.state.email, this.state.password).then(({data}) => {
+    api.postLogin(this.state.email, this.state.password).then(({ data }) => {
       if (!data.valid) {
         console.error("Bad login:", data);
         // TODO Tell the user something went wrong
-        return 
-      } 
+        return;
+      }
 
       // Login Success
-      Cookies.set("session", data.session);
+      Cookies.storeLoginDetails(data);
 
       // If we're coming from somewhere, go back there
       if (queryParams().back) {
         Router.replace(queryParams().back);
       } else {
-        Router.replace("/") // Otherwise just go home
+        Router.replace("/"); // Otherwise just go home
       }
     });
   }
@@ -61,11 +59,11 @@ class Login extends React.Component {
     this.setState({
       session: undefined
     });
-    Cookies.remove("session");
+    Cookies.removeLoginDetails();
   }
 
   render() {
-    if (this.state.session) {
+    if (Cookies.isLoggedIn()) {
       return <AlreadyLoggedIn onLogOut={this.onLogOut} />;
     }
 
