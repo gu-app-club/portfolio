@@ -76,7 +76,6 @@ func BookHandler(w http.ResponseWriter, r *http.Request) {
  * registered and a unique session string will be returned.
  *********************/
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
 	r.ParseForm()
@@ -113,7 +112,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
  * new session will be attached to the user and returned as a JSON object.
  *********************/
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
 	r.ParseForm()
@@ -143,8 +141,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
  * It will fail if the user is not authenticated or if their is a MySQL error.
  *********************/
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	r.ParseForm()
 
@@ -200,8 +198,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
  * It will fail if the user is not authenticated or if their is a MySQL error.
  *********************/
  func ReplaceHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	r.ParseForm()
 
@@ -209,30 +207,41 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	body := r.Form.Get("body")
 	pageID := r.Form.Get("pageID")
 
+	cookies := r.Cookies()
+	if(!ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session")){
+		fmt.Fprintln(w, `{"valid":false}`)
+		return		
+	}
+
 	username_cookie, err := r.Cookie("username")
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)		
 		panic(err)
 	}
 
 	username := username_cookie.Value
 	session_cookie, err := r.Cookie("session")
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)		
 		panic(err)
 	}
 
 	session := session_cookie.Value
 	conn, err := SQLConnect(false)
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
 	valid, session, err := Login(conn, username, session)
 	if err != nil {
+		fmt.Fprintln(w, `{"valid":false}`)		
 		panic(err)
 	}
 
 	if valid {
 		err := UpdatePage(conn, username, name, body, pageID)
 		if err != nil {
+			fmt.Fprintln(w, `{"valid":false}`)
 			panic(err)
 		} else {
 			fmt.Fprintln(w, `{"session": "`+string(session)+`", "valid":true}`)
@@ -240,7 +249,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Fprintln(w, `{"valid":false}`)
 	}
-
 }
 
 /*********************
@@ -248,7 +256,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
  * THIS IS ONLY FOR DEVELOPMENT. DEPRECIATE!
  *********************/
  func AccessCodeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	conn, err := SQLConnect(false)
 	if err != nil {

@@ -12,7 +12,7 @@ func main() {
 
 	// Fix CORS problems
 	headersOk := handlers.AllowedHeaders([]string{"content-type"})
-	originsOk := handlers.AllowedOrigins([]string{"*"}) //TODO: Change to be just our front-end domain probably
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000"}) //TODO: Change to be just our front-end domain probably
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(headersOk, originsOk, methodsOk)(router)))

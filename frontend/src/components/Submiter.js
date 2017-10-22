@@ -5,6 +5,7 @@ import Title from "./Title";
 import Link from "next/link";
 import readBlob from "read-blob";
 import api from "../api";
+import Cookies from "../lib/Cookies";
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -30,7 +31,7 @@ class SubmitForm extends React.Component {
   onUserSubmit() {
     api.postUpload(this.state.title, this.state.uploadedText).then(({data}) => {
       if(data.valid){
-        Cookies.set("session", data.session);
+        Cookies.updateSession(data.session)
       }else{
         //TODO error handling.
       }

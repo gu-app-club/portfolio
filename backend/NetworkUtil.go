@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -134,8 +133,6 @@ func Login(conn *client.Conn, key string, password string) (bool, string, error)
 		userID, _ = results.GetInt(0, 0)
 	}
 
-	fmt.Println("userID: " + strconv.Itoa(int(userID)))
-
 	if userID >= 0 {
 		session_b, err := exec.Command("uuidgen").Output()
 		if err != nil {
@@ -181,7 +178,7 @@ func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
 }
 
 /*********************
- * AddPage adds a page to a database.
+ * Update page replaces a page to a database.
  *********************/
 
  func UpdatePage(conn *client.Conn, username string, name string, body string, pageID string) error {
@@ -193,7 +190,6 @@ func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
 	}
 
 	query := `UPDATE pages SET body='` + body + `', name='` + name + `' WHERE pageID='` + pageID + `' AND userID='` + userID + `'`
-	fmt.Println(query)
 	_, err = conn.Execute(query)
 	return err
 }
@@ -221,7 +217,7 @@ func AddPage(conn *client.Conn, username string, name string, body string) error
  * or "-1" if the username is not found.
  *********************/
 func GetUserID(conn *client.Conn, username string) (string, error) {
-	query := `SELECT userID FROM users WHERE username='` + username + `'`
+	query := `SELECT userID FROM users WHERE username='` + username + `' OR email='` + username + `'`
 	results, err := conn.Execute(query)
 	if err != nil {
 		return "-1", err

@@ -83,6 +83,10 @@ function storeLoginDetails({ username, session }) {
   Cookies.set("session", session);
 }
 
+function updateSession(session){
+  Cookies.set("session", session)
+}
+
 /**
  * Get the login details from the cookies cookie
  */
@@ -105,5 +109,6 @@ export default {
   isLoggedIn,
   storeLoginDetails,
   getLoginDetails,
-  removeLoginDetails
+  removeLoginDetails,
+  updateSession
 };
