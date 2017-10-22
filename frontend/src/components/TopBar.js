@@ -30,11 +30,6 @@ class TopBar extends React.Component {
       <TopBarWrapper>
         <Title>The Portfolio</Title>
 
-        {/* Profile */}
-        <Icon>
-          <UserSVG />
-        </Icon>
-
         {/* Add new post */}
         <Link href="/new" prefetch>
           <Icon>

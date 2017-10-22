@@ -5,7 +5,7 @@ const Article = props => {
     <div>
       <Markdown src={props.body} key={`${props.pageID}-mark`} />
       <p>
-        By <a href="#">{props.author}</a>
+        By <b>{props.author} </b>
       </p>
       <hr key={`${props.pageID}-hr`} />
     </div>
