@@ -5,7 +5,12 @@ import api from "../api";
 import Cookies from "js-cookie";
 import Router from 'next/router';
 import Flash from "./Flash";
+import Link from "next/link";
+import styled from "styled-components";
 
+
+
+const AppWrapper = styled.div`width: 100%;`;
 /**
  * Show this if we think the user has already been logged in
  */
@@ -78,6 +83,8 @@ class Login extends React.Component {
     }
 
     return (
+
+    <AppWrapper>
       <form onSubmit={this.onSubmit}>
         {
           this.state.flashVisible
@@ -107,6 +114,11 @@ class Login extends React.Component {
         <input type="submit" value="Login" />
         <HomeButton>Back</HomeButton>
       </form>
+      <Link href="/register">
+          or register
+      </Link>
+
+    </AppWrapper>
     );
   }
 }

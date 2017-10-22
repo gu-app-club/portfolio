@@ -4,6 +4,7 @@ import styled from "styled-components";
 import HomeButton from "./HomeButton";
 import changeByName from "../util/changeByName";
 import Flash from "./Flash";
+import Link from "next/link";
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -103,6 +104,9 @@ class Register extends React.Component {
           <input type="submit"  value="Register" />
           <HomeButton> Cancel </HomeButton>
         </form>
+        <Link href="/login">
+            or login
+        </Link>
       </AppWrapper>
     );
   }
