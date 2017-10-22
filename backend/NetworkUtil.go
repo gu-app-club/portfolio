@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	
+
 	"github.com/siddontang/go-mysql/client"
 	"github.com/Pallinder/go-randomdata"
 )
@@ -172,7 +172,7 @@ func FieldExists(conn *client.Conn, field string, value string, table string) (b
  * the `access_codes` database.
  *********************/
 func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
-	query := `SELECT access_code FROM access_codes WHERE access_code ='` + accessCode + `' AND valid=1`
+	query := `SELECT access_code FROM access_codes WHERE access_code = '` + accessCode + `' AND valid = 1`
 	results, err := conn.Execute(query)
 	if err != nil {
 		return false, err
@@ -191,7 +191,7 @@ func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
 	} else if userID == "-1" {
 		return errors.New("Invalid userID {-1}")
 	}
-	
+
 	query := `UPDATE pages SET body='` + body + `', name='` + name + `' WHERE pageID='` + pageID + `' AND userID='` + userID + `'`
 	fmt.Println(query)
 	_, err = conn.Execute(query)

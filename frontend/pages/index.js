@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 export default class extends React.Component {
   static async getInitialProps() {
-    const { data } = await api.getPageList(3, 0);
+    const { data } = await api.getPageList(10, 0);
     return { articles: data.pages };
   }
 

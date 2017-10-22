@@ -4,7 +4,11 @@ import changeByName from "../util/changeByName";
 import api from "../api";
 import Cookies from "../lib/Cookies";
 import Router from "next/router";
+import Flash from "./Flash";
+import Link from "next/link";
+import styled from "styled-components";
 
+const AppWrapper = styled.div`width: 100%;`;
 /**
  * Show this if we think the user has already been logged in
  */
@@ -23,7 +27,9 @@ class Login extends React.Component {
     this.state = {
       session: "",
       email: "",
-      password: ""
+      password: "",
+      errorMsg: "",
+      flashVisible: false
     };
 
     this.onLogOut = this.onLogOut.bind(this);
@@ -35,11 +41,15 @@ class Login extends React.Component {
     changeByName(this, event);
   }
 
-  onSubmit() {
+  onSubmit(e) {
+    e.preventDefault();
+
     api.postLogin(this.state.email, this.state.password).then(({ data }) => {
       if (!data.valid) {
-        console.error("Bad login:", data);
-        // TODO Tell the user something went wrong
+        this.setState({
+          errorMsg: "Email and Password does not match!!!",
+          flashVisible: true
+        });
         return;
       }
 
@@ -68,28 +78,36 @@ class Login extends React.Component {
     }
 
     return (
-      <div>
-        <label htmlFor="email"> Email </label>
-        <input
-          type="email"
-          placeholder="george@gmail.com"
-          id="email"
-          name="email"
-          onChange={this.onChange}
-        />
+      <AppWrapper>
+        <form onSubmit={this.onSubmit}>
+          {this.state.flashVisible ? (
+            <Flash message={this.state.errorMsg} />
+          ) : null}
+          <label htmlFor="email"> Email </label>
+          <input
+            type="email"
+            placeholder="george@gmail.com"
+            id="email"
+            name="email"
+            onChange={this.onChange}
+            required
+          />
 
-        <label htmlFor="password"> Password </label>
-        <input
-          type="password"
-          placeholder="********"
-          id="password"
-          name="password"
-          onChange={this.onChange}
-        />
+          <label htmlFor="password"> Password </label>
+          <input
+            type="password"
+            placeholder="********"
+            id="password"
+            name="password"
+            onChange={this.onChange}
+            required
+          />
 
-        <button onClick={this.onSubmit}>Login</button>
-        <HomeButton>Back</HomeButton>
-      </div>
+          <input type="submit" value="Login" />
+          <HomeButton>Back</HomeButton>
+        </form>
+        <Link href="/register">or register</Link>
+      </AppWrapper>
     );
   }
 }

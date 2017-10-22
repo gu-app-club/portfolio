@@ -84,7 +84,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 	accessCode := r.Form.Get("accessCode")
-
+	
 	conn, err := SQLConnect(false)
 	if err != nil {
 		panic(err)
@@ -145,41 +145,41 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	r.ParseForm()
 
 	name := r.Form.Get("name")
 	body := r.Form.Get("body")
 	fmt.Println("no username")
-	username_cookie, err := r.Cookie("username")	
+	username_cookie, err := r.Cookie("username")
 	if err != nil {
 		fmt.Fprintln(w, `{"valid":false}`)
 	//	panic(err)
 	}
 	username := username_cookie.Value
 
-	session_cookie, err := r.Cookie("session")	
+	session_cookie, err := r.Cookie("session")
 	fmt.Println("no session")
-	
+
 	if err != nil {
 		panic(err)
 	}
 	session := session_cookie.Value
 	conn, err := SQLConnect(false)
 	if err != nil {
-		fmt.Fprintln(w, `{"valid":false}`)		
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
 	valid, session, err := Login(conn, username, session)
 	if err != nil {
-		fmt.Fprintln(w, `{"valid":false}`)		
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
 
 	if valid {
 		err := AddPage(conn, username, name, body)
 		if err != nil {
-			fmt.Fprintln(w, `{"valid":false}`)			
+			fmt.Fprintln(w, `{"valid":false}`)
 			panic(err)
 		} else {
 			fmt.Fprintln(w, `{"session": "`+string(session)+`", "valid":true}`)
@@ -197,7 +197,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
  func ReplaceHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	r.ParseForm()
 
 	name := r.Form.Get("name")
@@ -239,7 +239,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*********************
- * AccessCodeHandler creates and returns a new access code. 
+ * AccessCodeHandler creates and returns a new access code.
  * THIS IS ONLY FOR DEVELOPMENT. DEPRECIATE!
  *********************/
  func AccessCodeHandler(w http.ResponseWriter, r *http.Request) {

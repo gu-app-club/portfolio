@@ -24,13 +24,13 @@ class SubmitForm extends React.Component {
     this.onUserSubmit = this.onUserSubmit.bind(this);
     this.updateAuthorValue = this.updateAuthorValue.bind(this);
     this.updateTitleValue = this.updateTitleValue.bind(this);
-    
+
   }
 
   onUserSubmit() {
     api.postUpload(this.state.title, this.state.uploadedText).then(({data}) => {
       if(data.valid){
-        Cookies.set("session", data.session);        
+        Cookies.set("session", data.session);
       }else{
         //TODO error handling.
       }
@@ -57,10 +57,10 @@ class SubmitForm extends React.Component {
   }
 
   updateTitleValue(evt){
-    this.setState({title: evt.target.value});       
+    this.setState({title: evt.target.value});
   }
   updateAuthorValue(evt){
-    this.setState({author: evt.target.value});       
+    this.setState({author: evt.target.value});
   }
 
   render() {

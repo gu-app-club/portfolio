@@ -3,6 +3,8 @@ import api from "../api";
 import styled from "styled-components";
 import HomeButton from "./HomeButton";
 import changeByName from "../util/changeByName";
+import Flash from "./Flash";
+import Link from "next/link";
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -15,19 +17,22 @@ class Register extends React.Component {
       name: "",
       email: "",
       password: "",
-      access_code: ""
+      access_code: "",
+      errorMsg: "",
+      flashVisible: false
     };
-
-    this.state = {};
-    this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   onChange(event) {
     changeByName(this, event);
   }
 
-  onSubmit() {
+  onSubmit(e) {
+    e.preventDefault()
+    this.state.errorMsg = "";
+
     api
       .postRegister(
         this.state.access_code,
@@ -35,26 +40,73 @@ class Register extends React.Component {
         this.state.password,
         this.state.name
       )
-      .then(console.log);
+      .then(({data}) => {
+        if (!data.valid) {
+          if (!data.username.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.username.message + " "
+            });
+          }
+          if (!data.email.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.email.message + " "
+            });
+          }
+          if (!data.password.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.password.message + " "
+            });
+          }
+          if (!data.accessCode.valid) {
+            this.setState({
+              errorMsg: this.state.errorMsg + " " + data.accessCode.message + " "
+            });
+          }
+          this.setState({
+            flashVisible: true
+          })
+          return;
+        }
+
+        // Login Success
+        Cookies.set("session", data.session);
+
+        // If we're coming from somewhere, go back there
+        if (queryParams().back) {
+          Router.replace(queryParams().back);
+        } else {
+          Router.replace("/") // Otherwise just go home
+        }
+      });
   }
 
   render() {
     return (
       <AppWrapper>
-        <label htmlFor="name"> Name </label>
-        <input type="text" id="name" name="name" onChange={this.onChange} />
+        {
+          this.state.flashVisible
+            ? <Flash message={this.state.errorMsg}/>
+            : null
+        }
+        <form onSubmit= {this.onSubmit}>
+          <label htmlFor="name"> Name </label>
+          <input type="text" id="name" name="name" onChange={this.onChange} required/>
 
-        <label htmlFor="email"> Email </label>
-        <input type="email" id="email" name="email" onChange={this.onChange} />
+          <label htmlFor="email"> Email </label>
+          <input type="email" id="email" name="email" onChange={this.onChange} required/>
 
-        <label htmlFor="password"> Password </label>
-        <input type="password" name="password" onChange={this.onChange} />
+          <label htmlFor="password"> Password </label>
+          <input type="password" name="password" onChange={this.onChange} required/>
 
-        <label htmlFor="acess"> Access Code </label>
-        <input type="text" name="access_code" onChange={this.onChange} />
+          <label htmlFor="acess"> Access Code </label>
+          <input type="text" name="access_code" onChange={this.onChange} required/>
 
-        <button onClick={this.onSubmit}> Submit </button>
-        <HomeButton> Cancel </HomeButton>
+          <input type="submit"  value="Register" />
+          <HomeButton> Cancel </HomeButton>
+        </form>
+        <Link href="/login">
+            or login
+        </Link>
       </AppWrapper>
     );
   }
