@@ -17,7 +17,7 @@ export default class extends React.Component {
   render() {
     return (
       <Centered>
-        <Main articles={[]} />
+        <Main articles={this.props.articles} />
       </Centered>
     );
   }
