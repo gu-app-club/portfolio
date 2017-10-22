@@ -24,6 +24,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "prod-start": "next build; next start",
     "lint": "./node_modules/.bin/eslint src pages"
   },
   "devDependencies": {
