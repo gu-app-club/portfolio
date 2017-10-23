@@ -9,6 +9,7 @@ import {
   UPLOAD_ROUTE
 } from "./constants";
 import querystring from "querystring";
+axios.defaults.withCredentials = true;
 
 function getPage(userID, pageID) {
   return axios.get(
