@@ -5,6 +5,11 @@ import (
 	"strings"
 	"unicode"
 	"net/http"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"io"
+	b64 "encoding/base64"
 
 	"golang.org/x/crypto/bcrypt"
 	"github.com/siddontang/go-mysql/client"
@@ -73,7 +78,7 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		Password:   Validator{Valid: true},
 		AccessCode: Validator{Valid: true},
 	}
-
+	
 	userExists, err := FieldExists(conn, "username", username, "users")
 	if err != nil{
 		panic(err)
@@ -129,4 +134,54 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 	}
 
 	return params
+}
+
+
+func decrypt(cipherstring string, keystring string) string {
+	cipherbyte, _ := b64.StdEncoding.DecodeString(cipherstring)
+	ciphertext := []byte(cipherbyte)
+	key := []byte(keystring)
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+	if len(ciphertext) < aes.BlockSize {
+		panic("Text is too short")
+	}
+
+	iv := ciphertext[:aes.BlockSize]
+
+	ciphertext = ciphertext[aes.BlockSize:]
+
+	stream := cipher.NewCFBDecrypter(block, iv)
+
+	stream.XORKeyStream(ciphertext, ciphertext)
+
+	return string(ciphertext)
+}
+
+func encrypt(plainstring, keystring string) string {
+	plaintext := []byte(plainstring)
+
+	key := []byte(keystring)
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
+
+	iv := ciphertext[:aes.BlockSize]
+
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		panic(err)
+	}
+
+	stream := cipher.NewCFBEncrypter(block, iv)
+
+	stream.XORKeyStream(ciphertext[aes.BlockSize:], plaintext)
+
+	return b64.StdEncoding.EncodeToString(ciphertext)
 }

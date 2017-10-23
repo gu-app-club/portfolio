@@ -34,7 +34,10 @@ func GetPage(conn *client.Conn, pageID string, userID string) (Page, error) {
 	}
 
 	name, _ := results.GetString(0, 2)
+	name = decrypt(name, KEY)	
 	body, _ := results.GetString(0, 4)
+	body = decrypt(body, KEY)
+	
 	author, _ := results.GetString(0, 3)
 
 	conn.Close()
@@ -68,8 +71,10 @@ func GetBook(conn *client.Conn, offset int, count int) (Book, error) {
 
 	for i := 0; i < len(results.Values); i++ {
 		name, _ := results.GetString(i, 2)
+		name = decrypt(name, KEY)		
 		author, _ := results.GetString(i, 3)
 		body, _ := results.GetString(i, 4)
+		body = decrypt(body, KEY)
 		pageID, _ := results.GetString(i, 0)
 		userID, _ := results.GetString(i, 1)
 		page := Page{
@@ -155,7 +160,7 @@ func Login(conn *client.Conn, key string, password string) (bool, string, error)
  * FieldExists checks if a field of a certain value in a table exists.
  *********************/
 func FieldExists(conn *client.Conn, field string, value string, table string) (bool, error) {
-	query := `SELECT ` + field + ` FROM ` + table + ` WHERE ` + field + `='` + value + `'`
+	query := `SELECT ` + field + ` FROM ` + table + ` WHERE ` + field + `='` + value + `' OR ` + field + `='` + encrypt(value, KEY) + `'`
 	results, err := conn.Execute(query)
 	if err != nil {
 		return false, err
@@ -189,6 +194,9 @@ func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
 		return errors.New("Invalid userID {-1}")
 	}
 
+	body = encrypt(body, KEY)
+	name = encrypt(name, KEY)
+
 	query := `UPDATE pages SET body='` + body + `', name='` + name + `' WHERE pageID='` + pageID + `' AND userID='` + userID + `'`
 	_, err = conn.Execute(query)
 	return err
@@ -205,6 +213,9 @@ func AddPage(conn *client.Conn, username string, name string, body string) error
 	} else if userID == "-1" {
 		return errors.New("Invalid userID {-1}")
 	}
+
+	body = encrypt(body, KEY)
+	name = encrypt(name, KEY)
 
 	query := `INSERT INTO pages (pageID, userID, name, author, body)
 			VALUES (NULL, '` + userID + `', '` + name + `', '` + username + `', '` + body + `')`

@@ -1,4 +1,4 @@
-	package main
+package main
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -15,6 +15,15 @@ func Test_IsInt(t *testing.T) {
 	assert.Equal(t, false, IsInt("a"))
 	assert.Equal(t, true, IsInt("1", "-1", "0"))
 	assert.Equal(t, false, IsInt("not int", "-1", "0"))
+}
+
+func Test_Encryption(t *testing.T){
+	testA := encrypt("hello world", KEY)
+	testB := encrypt("hello world", KEY)
+
+	testA = decrypt(testA, KEY)
+	testB = decrypt(testB, KEY)
+	assert.Equal(t, true, testA == testB)
 }
 
 func Test_StripSpaces(t *testing.T) {
