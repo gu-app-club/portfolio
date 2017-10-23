@@ -3,8 +3,11 @@ import api from "../api";
 import styled from "styled-components";
 import HomeButton from "./HomeButton";
 import changeByName from "../util/changeByName";
+import Cookies from "../lib/Cookies";
+import Router from "next/router";
 import Flash from "./Flash";
 import Link from "next/link";
+import queryParams from "../util/queryParams"
 
 const AppWrapper = styled.div`width: 100%;`;
 const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
@@ -69,8 +72,7 @@ class Register extends React.Component {
         }
 
         // Login Success
-        Cookies.set("session", data.session);
-
+        Cookies.storeLoginDetails({ username: this.state.name, session: data.session })
         // If we're coming from somewhere, go back there
         if (queryParams().back) {
           Router.replace(queryParams().back);
