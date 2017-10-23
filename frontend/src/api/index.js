@@ -43,30 +43,15 @@ function postLogin(key, password) {
 /*Upload does not accept author.*/
 function postUpload(title, body) {
   const urlEncodedData = querystring.stringify({
-    name,
+    title,
     body
   });
 
   return axios(BASE_URL + UPLOAD_ROUTE, {
-    method: "POST", 
+    method: "POST",
     data: urlEncodedData,
-    withCredentials: true 
+    withCredentials: true
   });
 }
-
-// function postPageList(name, body) {
-//   Cookies.set("session", "", { expires: 365 });
-
-//   return axios.post(
-//     `${BASE_URL}${PAGE_ROUTE}/new`,
-//     {
-//       name,
-//       body
-//     },
-//     {
-//       withCredentials: true
-//     }
-//   );
-// }
 
 export default { getPage, getPageList, postRegister, postLogin, postUpload };

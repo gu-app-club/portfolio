@@ -28,7 +28,9 @@ class TopBar extends React.Component {
   render() {
     return (
       <TopBarWrapper>
-        <Title>The Portfolio</Title>
+        <Title>
+        <code>{"$ cd ~/gonzaga && pwd "}</code>
+        </Title>
 
         {/* Add new post */}
         <Link href="/new" prefetch>
