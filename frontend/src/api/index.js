@@ -10,6 +10,7 @@ import {
 } from "./constants";
 import querystring from "querystring";
 axios.defaults.withCredentials = true;
+import Cookies from "../lib/Cookies";
 
 function getPage(userID, pageID) {
   return axios.get(
@@ -43,6 +44,12 @@ function postLogin(key, password) {
 
 /*Upload does not accept author.*/
 function postUpload(title, body) {
+  if (Cookies.isLoggedIn()) {
+    throw new Error("User is not logged in!");
+  }
+
+  console.log(Cookies.getLoginDetails());
+
   const urlEncodedData = querystring.stringify({
     title,
     body
