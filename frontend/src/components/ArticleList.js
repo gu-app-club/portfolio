@@ -15,7 +15,7 @@ class ArticleList extends React.Component {
         <div>
           <p>
             {"We can't find any posts! 😭 If you're a gonzaga student,"}
-            <Link href="/new"> <a> click here to add one one. </a> </Link>
+            <Link href="/new"> click here to add one one. </Link>
           </p>
         </div>
       );
