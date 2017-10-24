@@ -15,6 +15,7 @@ import (
  *********************/
 func PageHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	vars := mux.Vars(r)
 	userID := vars["userID"]
@@ -44,6 +45,7 @@ func PageHandler(w http.ResponseWriter, r *http.Request) {
  *********************/
 func BookHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	vars := mux.Vars(r)
 
@@ -77,6 +79,7 @@ func BookHandler(w http.ResponseWriter, r *http.Request) {
  *********************/
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	r.ParseForm()
 	username := r.Form.Get("username")
@@ -113,7 +116,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
  *********************/
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	r.ParseForm()
 	key := r.Form.Get("key")
 	password := r.Form.Get("password")
@@ -150,8 +153,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	body := r.Form.Get("body")
 	
 	cookies := r.Cookies()
+	data := "";
+	for _, cookie := range cookies {
+		data += "&" + (cookie.Name + "=" + cookie.Value)
+	}
 	if(!ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session")){
-		fmt.Fprintln(w, `{"valid":false}`)
+		fmt.Fprintln(w, `{"valid":false, "message":"Did not recieve cookies", "data":"` + data +`"}`)
 		return		
 	}
 
