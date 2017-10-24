@@ -44,7 +44,7 @@ function postLogin(key, password) {
 
 /*Upload does not accept author.*/
 function postUpload(title, body) {
-  if (Cookies.isLoggedIn()) {
+  if (!Cookies.isLoggedIn()) {
     throw new Error("User is not logged in!");
   }
 
