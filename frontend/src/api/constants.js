@@ -1,4 +1,4 @@
-let BASE_URL = "http://104.236.175.154:8080";
+let BASE_URL = "http://gupwd.com:8080";
 if (process.env.NODE_ENV === "development") {
   BASE_URL = "http://localhost:8080";
   console.log("Running using dev host!"); // eslint-disable-line no-console
