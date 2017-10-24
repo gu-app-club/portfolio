@@ -1,8 +1,8 @@
-import UserSVG from "../../assets/user.svg";
 import UploadSVG from "../../assets/upload.svg";
 import styled from "styled-components";
 import Link from "next/link";
 import Title from "./Title";
+import RedirectToLogin from "./RedirectToLogin";
 
 const Icon = styled.div`
   padding: 5px;
@@ -33,11 +33,11 @@ class TopBar extends React.Component {
         </Title>
 
         {/* Add new post */}
-        <Link href="/new" prefetch>
+        <RedirectToLogin href="/new" prefetch>
           <Icon>
             <UploadSVG />
           </Icon>
-        </Link>
+        </RedirectToLogin>
       </TopBarWrapper>
     );
   }

@@ -7,8 +7,11 @@ import Router from "next/router";
 import Flash from "./Flash";
 import Link from "next/link";
 import styled from "styled-components";
+import Title from "./Title";
 
 const AppWrapper = styled.div`width: 100%;`;
+const TitleWithMargin = Title.extend`margin-bottom: 25px;`;
+
 /**
  * Show this if we think the user has already been logged in
  */
@@ -77,8 +80,14 @@ class Login extends React.Component {
       return <AlreadyLoggedIn onLogOut={this.onLogOut} />;
     }
 
+    const NeedToBeLoggedInMessage = () => {
+      return queryParams().back ? <TitleWithMargin>You need to be logged in to do that!</TitleWithMargin> : null; 
+    } 
+
     return (
       <AppWrapper>
+        <NeedToBeLoggedInMessage />
+
         <form onSubmit={this.onSubmit}>
           {this.state.flashVisible ? (
             <Flash message={this.state.errorMsg} />

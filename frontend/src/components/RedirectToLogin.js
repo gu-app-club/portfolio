@@ -13,16 +13,16 @@ class RedirectToLoginLink extends React.Component {
     }
 
     // Browser
-    if (location) {
+    if (typeof location !== "undefined") {
       return (
         <Link
           href={{ pathname: "/login", query: { back: location.pathname } }}
-        />
+        >{this.props.children}</Link>
       );
     }
 
     // Server side rendered
-    return <Link href={{ pathname: "/login" }} />;
+    return <Link href={{ pathname: "/login" }}>{this.props.children}</Link>;
   }
 }
 

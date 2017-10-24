@@ -14,7 +14,10 @@ export default class extends React.Component {
         "Can't connect to the backend :( Are we sure it's running?",
         err
       );
+
+      return {articles: []}; // No response from backend :(
     }
+
     return { articles: data.data.pages };
   }
 
@@ -25,7 +28,7 @@ export default class extends React.Component {
   render() {
     return (
       <Centered>
-        <Main articles={this.props.articles} />
+        <Main articles={this.props.articles.reverse()} />
       </Centered>
     );
   }
