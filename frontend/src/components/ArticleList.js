@@ -2,6 +2,7 @@ import React from "react";
 import Article from "./Article";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import RedirectToLogin from "./RedirectToLogin";
 import { FadeInDown } from "./animations";
 
 class ArticleList extends React.Component {
@@ -15,7 +16,9 @@ class ArticleList extends React.Component {
         <div>
           <p>
             {"We can't find any posts! 😭 If you're a gonzaga student,"}
-            <Link href="/new"> click here to add one one. </Link>
+            <RedirectToLogin href="/new">
+              click here to add one one.
+            </RedirectToLogin>
           </p>
         </div>
       );
