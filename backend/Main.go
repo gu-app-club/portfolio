@@ -4,10 +4,13 @@ import (
 	"log"
 	"net/http"
 
+	raven "github.com/getsentry/raven-go"
 	"github.com/gorilla/handlers"
 )
 
 func main() {
+	raven.SetDSN("https://ee687e5bbbd84e2487bddc34287eb957:b4ce71323e77488d873d2b6c3f9f05c3@sentry.io/235656")
+
 	router := NewRouter()
 
 	// Fix CORS problems

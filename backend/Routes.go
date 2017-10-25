@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	raven "github.com/getsentry/raven-go"
 	"github.com/gorilla/mux"
 )
 
@@ -30,47 +31,46 @@ func NewRouter() *mux.Router {
 }
 
 var routes = Routes{
-     Route{
-          "RegisterHandler",
-          "POST",
-          "/register",
-          RegisterHandler,
-     },
+	Route{
+		"RegisterHandler",
+		"POST",
+		"/register",
+		raven.RecoveryHandler(RegisterHandler),
+	},
 	Route{
 		"LoginHandler",
 		"POST",
 		"/login",
-		LoginHandler,
+		raven.RecoveryHandler(LoginHandler),
 	},
 	Route{
 		"BookHandler",
 		"GET",
 		"/pages/{count}/{offset}",
-		BookHandler,
+		raven.RecoveryHandler(BookHandler),
 	},
 	Route{
 		"PageHandler",
 		"GET",
 		"/users/{userID}/pages/{pageID}",
-		PageHandler,
+		raven.RecoveryHandler(PageHandler),
 	},
 	Route{
 		"UploadHandler",
 		"POST",
 		"/pages/new",
-		UploadHandler,
+		raven.RecoveryHandler(UploadHandler),
 	},
 	Route{
 		"ReplaceHandler",
 		"POST",
 		"/pages/replace",
-		ReplaceHandler,
+		raven.RecoveryHandler(ReplaceHandler),
 	},
 	Route{
 		"AccessCodeHandler",
 		"GET",
 		"/access/new",
-		AccessCodeHandler,
+		raven.RecoveryHandler(AccessCodeHandler),
 	},
-
 }
