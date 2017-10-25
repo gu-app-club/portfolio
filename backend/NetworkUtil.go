@@ -1,90 +1,74 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"os/exec"
 	"strconv"
 	"strings"
 
-	"github.com/siddontang/go-mysql/client"
 	"github.com/Pallinder/go-randomdata"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 /*********************
  * Standard way to connect to an SQL database.
  *********************/
-func SQLConnect(testing bool) (*client.Conn, error) {
+func SQLConnect(testing bool) (*sql.DB, error) {
 	if testing {
-		return client.Connect(SQLURL, SQLUSER, SQLPASS, TEST_DBNAME) // url, user, pass, db
+		return sql.Open("mysql", SQLUSER+":"+SQLPASS+"@tcp("+SQLURL+")/"+TEST_DBNAME)
 	}
-	return client.Connect(SQLURL, SQLUSER, SQLPASS, DBNAME) // url, user, pass, db
-
+	return sql.Open("mysql", SQLUSER+":"+SQLPASS+"@tcp("+SQLURL+")/"+DBNAME)
 }
 
 /*********************
  * GetPage returns a Page object given an unique PageID and UserID
  *********************/
-func GetPage(conn *client.Conn, pageID string, userID string) (Page, error) {
+func GetPage(conn *sql.DB, pageID string, userID string) (Page, error) {
+	var page Page
 
-	query := `SELECT * FROM pages WHERE pageID=` + pageID + ` AND userID=` + userID
+	rows, err := conn.Query("SELECT name, author, body FROM pages WHERE pageID = ? AND userID = ?", pageID, userID)
 
-	results, err := conn.Execute(query)
 	if err != nil {
-		return Page{}, err
+		return page, err
 	}
 
-	name, _ := results.GetString(0, 2)
-	name = decrypt(name, KEY)	
-	body, _ := results.GetString(0, 4)
-	body = decrypt(body, KEY)
-	
-	author, _ := results.GetString(0, 3)
+	for rows.Next() {
+		err := rows.Scan(&page.Name, &page.Author, &page.Body)
+		if err != nil {
+			return page, err
+		}
+	}
 
-	conn.Close()
-
-	return Page{
-		Name:   name,
-		Body:   body,
-		Author: author,
-		PageID: pageID,
-		UserID: userID,
-	}, nil
+	return page, err
 }
 
 /*********************
  * GetBook returns a collection of constructed with the pagination parameters
  * of offset and countcreates a hash with a baked salt from a given password.
  *********************/
-func GetBook(conn *client.Conn, offset int, count int) (Book, error) {
-	query := `SELECT * FROM pages LIMIT ` + strconv.Itoa(offset) + `,` + strconv.Itoa(count)
-	results, err := conn.Execute(query)
-	if err != nil {
-		return Book{}, err
-	}
-
+func GetBook(conn *sql.DB, offset int, count int) (Book, error) {
 	book := Book{
 		Pages:  []Page{},
 		Count:  count,
 		Offset: offset,
-		Total:  len(results.Values),
+		Total:  0,
 	}
 
-	for i := 0; i < len(results.Values); i++ {
-		name, _ := results.GetString(i, 2)
-		name = decrypt(name, KEY)		
-		author, _ := results.GetString(i, 3)
-		body, _ := results.GetString(i, 4)
-		body = decrypt(body, KEY)
-		pageID, _ := results.GetString(i, 0)
-		userID, _ := results.GetString(i, 1)
-		page := Page{
-			Name:   name,
-			Author: author,
-			Body:   body,
-			PageID: pageID,
-			UserID: userID,
+	rows, err := conn.Query("SELECT name, author, body, pageID, userID FROM pages LIMIT ?, ?", strconv.Itoa(offset), strconv.Itoa(count))
+
+	if err != nil {
+		return book, err
+	}
+
+	for rows.Next() {
+		var page Page
+		err := rows.Scan(&page.Name, &page.Author, &page.Body, &page.PageID, &page.UserID)
+		if err != nil {
+			return book, err
 		}
 		book.Pages = append(book.Pages, page)
+		book.Total++
 	}
 
 	return book, nil
@@ -94,23 +78,23 @@ func GetBook(conn *client.Conn, offset int, count int) (Book, error) {
  * Register will append a new user to the `users` database and invalidate
  * the accessCode provided.
  *********************/
-func Register(conn *client.Conn, username string, email string, accessCode string, password string) (string, error) {
+func Register(conn *sql.DB, username string, email string, accessCode string, password string) (string, error) {
 	password = GenerateHash(password)
-	session_b, err := exec.Command("uuidgen").Output()
+	sessionB, err := exec.Command("uuidgen").Output()
 	if err != nil {
 		return "", err
 	}
-	session := string(StripSpaces(string(session_b)))
+	session := string(StripSpaces(string(sessionB)))
 
-	query := `INSERT INTO users (userID, username, email, access_code, password, session)
-				VALUES (NULL, '` + username + `', '` + email + `', '` + accessCode + `', '` + password + `', '` + session + `')`
-	_, err = conn.Execute(query)
+	_, err = conn.Query("INSERT INTO users (userID, username, email, access_code, password, session) VALUES (NULL, ?, ?, ?, ?, ?)",
+		username, email, accessCode, password, session)
+
 	if err != nil {
-		return "", err
+		return "nil", err
 	}
 
-	query = `UPDATE access_codes SET valid=0 WHERE access_code='` + accessCode + `' LIMIT 1`
-	_, err = conn.Execute(query)
+	_, err = conn.Query("UPDATE access_codes SET valid=0 WHERE access_code = ? LIMIT 1",
+		accessCode)
 
 	if err != nil {
 		return "", err
@@ -123,49 +107,65 @@ func Register(conn *client.Conn, username string, email string, accessCode strin
  * If successfuly authenticated, a new session will be appended to the user.
  * This new session is returned.
  *********************/
-func Login(conn *client.Conn, key string, password string) (bool, string, error) {
-	query := `SELECT userID, password, session FROM users WHERE username='` + key + `' OR email='` + key + `' LIMIT 1`
-	results, err := conn.Execute(query)
+func Login(conn *sql.DB, key string, password string) (bool, string, error) {
+	rows, err := conn.Query("SELECT userID, password, session FROM users WHERE username = ? OR email = ? LIMIT 1",
+		key, key)
+
 	if err != nil {
 		return false, "", err
 	}
 
-	userID := int64(-1)
-	hashedPassword, _ := results.GetString(0, 1)
-	session, _ := results.GetString(0, 2)
+	var (
+		userID         = -1
+		hashedPassword = ""
+		session        = ""
+	)
 
-	if len(results.Values) > 0 && (CompareHash(hashedPassword, password) || session == password) {
-		userID, _ = results.GetInt(0, 0)
-	}
-
-	if userID >= 0 {
-		session_b, err := exec.Command("uuidgen").Output()
+	for rows.Next() {
+		err := rows.Scan(&userID, &hashedPassword, &session)
 		if err != nil {
 			return false, "", err
 		}
-		session := string(StripSpaces(string(session_b)))
-		query := `UPDATE users SET session='` + session + `' WHERE userID='` + strconv.Itoa(int(userID)) + `' LIMIT 1`
-		_, err = conn.Execute(query)
+	}
+
+	if userID >= 0 {
+		sessionB, err := exec.Command("uuidgen").Output()
+		if err != nil {
+			return false, "", err
+		}
+		session := string(StripSpaces(string(sessionB)))
+
+		_, err = conn.Query("UPDATE users SET session= ? WHERE userID= ? LIMIT 1",
+			session, userID)
 		if err != nil {
 			return false, "", err
 		}
 
 		return true, session, nil
-	} else {
-		return false, "", nil
 	}
+	return false, "", nil
+
 }
 
 /*********************
  * FieldExists checks if a field of a certain value in a table exists.
  *********************/
-func FieldExists(conn *client.Conn, field string, value string, table string) (bool, error) {
-	query := `SELECT ` + field + ` FROM ` + table + ` WHERE ` + field + `='` + value + `' OR ` + field + `='` + encrypt(value, KEY) + `'`
-	results, err := conn.Execute(query)
+func FieldExists(conn *sql.DB, field string, value string, table string) (bool, error) {
+	rows, err := conn.Query(`SELECT COUNT(`+field+`) FROM `+table+` WHERE `+field+`= ?`, value)
+
 	if err != nil {
 		return false, err
 	}
-	return (len(results.Values) > 0), nil
+	var count = 0
+
+	for rows.Next() {
+		err := rows.Scan(&count)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return (count > 0), nil
 
 }
 
@@ -173,40 +173,47 @@ func FieldExists(conn *client.Conn, field string, value string, table string) (b
  * AccessCodeValid checks if an accessCode exists and is valid within
  * the `access_codes` database.
  *********************/
-func AccessCodeValid(conn *client.Conn, accessCode string) (bool, error) {
-	query := `SELECT access_code FROM access_codes WHERE access_code = '` + accessCode + `' AND valid = 1`
-	results, err := conn.Execute(query)
+func AccessCodeValid(conn *sql.DB, accessCode string) (bool, error) {
+	rows, err := conn.Query("SELECT COUNT(access_code) FROM access_codes WHERE access_code = ? AND valid = 1",
+		accessCode)
+
 	if err != nil {
 		return false, err
 	}
-	return (len(results.Values) > 0), nil
+
+	var count = 0
+
+	for rows.Next() {
+		err := rows.Scan(&count)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return (count > 0), nil
 }
 
 /*********************
  * Update page replaces a page to a database.
  *********************/
 
- func UpdatePage(conn *client.Conn, username string, name string, body string, pageID string) error {
+func UpdatePage(conn *sql.DB, username string, name string, body string, pageID string) error {
 	userID, err := GetUserID(conn, username)
 	if err != nil {
 		return err
 	} else if userID == "-1" {
 		return errors.New("Invalid userID {-1}")
 	}
+	_, err = conn.Query("UPDATE pages SET body= ?, name= ? WHERE pageID= ? AND userID= ?",
+		body, name, pageID, userID)
 
-	body = encrypt(body, KEY)
-	name = encrypt(name, KEY)
-
-	query := `UPDATE pages SET body='` + body + `', name='` + name + `' WHERE pageID='` + pageID + `' AND userID='` + userID + `'`
-	_, err = conn.Execute(query)
 	return err
 }
 
 /*********************
  * AddPage adds a page to a database.
  *********************/
-
-func AddPage(conn *client.Conn, username string, name string, body string) error {
+func AddPage(conn *sql.DB, username string, name string, body string) error {
 	userID, err := GetUserID(conn, username)
 	if err != nil {
 		return err
@@ -214,12 +221,9 @@ func AddPage(conn *client.Conn, username string, name string, body string) error
 		return errors.New("Invalid userID {-1}")
 	}
 
-	body = encrypt(body, KEY)
-	name = encrypt(name, KEY)
+	_, err = conn.Query("INSERT INTO pages (pageID, userID, name, author, body) VALUES (NULL, ?, ?, ?, ?)",
+		userID, name, username, body)
 
-	query := `INSERT INTO pages (pageID, userID, name, author, body)
-			VALUES (NULL, '` + userID + `', '` + name + `', '` + username + `', '` + body + `')`
-	_, err = conn.Execute(query)
 	return err
 }
 
@@ -227,31 +231,33 @@ func AddPage(conn *client.Conn, username string, name string, body string) error
  * Given a username, GetUserID returns the userID as a string
  * or "-1" if the username is not found.
  *********************/
-func GetUserID(conn *client.Conn, username string) (string, error) {
-	query := `SELECT userID FROM users WHERE username='` + username + `' OR email='` + username + `'`
-	results, err := conn.Execute(query)
+func GetUserID(conn *sql.DB, username string) (string, error) {
+
+	rows, err := conn.Query("SELECT userID FROM users WHERE username= ? OR email= ?",
+		username, username)
+
 	if err != nil {
 		return "-1", err
 	}
 
-	if len(results.Values) > 0 {
-		i, err := results.GetString(0, 0)
+	var userID = "-1"
+
+	for rows.Next() {
+		err := rows.Scan(&userID)
 		if err != nil {
 			return "-1", err
-		} else {
-			return i, nil
 		}
-	} else {
-		return "-1", nil
 	}
+
+	return userID, nil
 }
 
 /*********************
  * Creates and returns an AccessCode
  *********************/
- func CreateAccessCode(conn *client.Conn) (string, error) {
+func CreateAccessCode(conn *sql.DB) (string, error) {
 	accessCode := strings.ToLower(randomdata.SillyName())
-	query := `INSERT INTO access_codes(access_code, valid) VALUES ('` + accessCode + `','1')`
-	_, err := conn.Execute(query)
+	_, err := conn.Query("INSERT INTO access_codes(access_code, valid) VALUES (?, 1)",
+		accessCode)
 	return accessCode, err
 }

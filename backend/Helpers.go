@@ -1,34 +1,19 @@
 package main
 
 import (
-	"strconv"
-	"strings"
-	"unicode"
-	"net/http"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"io"
+	"database/sql"
 	b64 "encoding/base64"
+	"io"
+	"net/http"
+	"strings"
+	"unicode"
 
-	"golang.org/x/crypto/bcrypt"
-	"github.com/siddontang/go-mysql/client"
 	"github.com/goware/emailx"
-
+	"golang.org/x/crypto/bcrypt"
 )
-
-/*********************
- * IsInt checks if a collection of strings is castable as an int.
- *********************/
-func IsInt(inputs ...string) bool {
-	for _, i := range inputs {
-		_, e := strconv.Atoi(i)
-		if e != nil {
-			return false
-		}
-	}
-	return true
-}
 
 /*********************
  * StripSpaces strips all spaces from a string.
@@ -58,9 +43,9 @@ func CompareHash(hashedPassword string, password string) bool {
 	return (err == nil)
 }
 
-func ContainsCookie(cookies []*http.Cookie, name string)(bool){
+func ContainsCookie(cookies []*http.Cookie, name string) bool {
 	for _, cookie := range cookies {
-		if cookie.Name == name{
+		if cookie.Name == name {
 			return true
 		}
 	}
@@ -70,7 +55,7 @@ func ContainsCookie(cookies []*http.Cookie, name string)(bool){
 /*********************
  * FieldCheck checks if provided parameters are valid for registration.
  *********************/
-func FieldCheck(conn *client.Conn, username string, email string, password string, accessCode string) (Params) {
+func FieldCheck(conn *sql.DB, username string, email string, password string, accessCode string) Params {
 	params := Params{
 		Valid:      true,
 		Username:   Validator{Valid: true},
@@ -78,12 +63,11 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		Password:   Validator{Valid: true},
 		AccessCode: Validator{Valid: true},
 	}
-	
+
 	userExists, err := FieldExists(conn, "username", username, "users")
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
-
 	if userExists {
 		params.Username.Valid = false
 		params.Username.Message = append(params.Username.Message, "Username taken.")
@@ -97,7 +81,7 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 	}
 
 	emailExists, err := FieldExists(conn, "email", email, "users")
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
@@ -106,7 +90,6 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		params.Email.Message = append(params.Email.Message, "Email taken.")
 		params.Valid = false
 	}
-
 
 	if emailx.Validate(email) != nil {
 		params.Email.Valid = false
@@ -124,7 +107,7 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 		panic(err)
 	}
 	accessCodeValid, err := AccessCodeValid(conn, accessCode)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	if len(accessCode) == 0 || !accessCodeValid {
@@ -135,7 +118,6 @@ func FieldCheck(conn *client.Conn, username string, email string, password strin
 
 	return params
 }
-
 
 func decrypt(cipherstring string, keystring string) string {
 	cipherbyte, _ := b64.StdEncoding.DecodeString(cipherstring)

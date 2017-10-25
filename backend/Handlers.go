@@ -20,9 +20,7 @@ func PageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userID := vars["userID"]
 	pageID := vars["pageID"]
-	if !IsInt(userID, pageID) {
-		return
-	}
+
 	conn, err := SQLConnect(false)
 	if err != nil {
 		panic(err)
@@ -48,10 +46,6 @@ func BookHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	vars := mux.Vars(r)
-
-	if !IsInt(vars["count"], vars["offset"]) {
-		return
-	}
 
 	count, _ := strconv.Atoi(vars["count"])
 	offset, _ := strconv.Atoi(vars["offset"])
@@ -86,7 +80,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 	accessCode := r.Form.Get("accessCode")
-	
+
 	conn, err := SQLConnect(false)
 	if err != nil {
 		panic(err)
@@ -120,7 +114,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	key := r.Form.Get("key")
 	password := r.Form.Get("password")
-	fmt.Println("key: " + key + ", password: " + password)
 
 	conn, err := SQLConnect(false)
 	if err != nil {
@@ -151,30 +144,30 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	name := r.Form.Get("name")
 	body := r.Form.Get("body")
-	
+
 	cookies := r.Cookies()
-	data := "";
+	data := ""
 	for _, cookie := range cookies {
 		data += "&" + (cookie.Name + "=" + cookie.Value)
 	}
-	if(!ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session")){
-		fmt.Fprintln(w, `{"valid":false, "message":"Did not recieve cookies", "data":"` + data +`"}`)
-		return		
+	if !ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session") {
+		fmt.Fprintln(w, `{"valid":false, "message":"Did not recieve cookies", "data":"`+data+`"}`)
+		return
 	}
 
-	username_cookie, err := r.Cookie("username")
+	usernameCookie, err := r.Cookie("username")
 	if err != nil {
 		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
-	username := username_cookie.Value
+	username := usernameCookie.Value
 
-	session_cookie, err := r.Cookie("session")
+	sessionCookie, err := r.Cookie("session")
 	if err != nil {
-		fmt.Fprintln(w, `{"valid":false}`)		
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
-	session := session_cookie.Value
+	session := sessionCookie.Value
 	conn, err := SQLConnect(false)
 	if err != nil {
 		fmt.Fprintln(w, `{"valid":false}`)
@@ -204,7 +197,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
  * Replace recieves a username and session cookie and a name and body form.
  * It will fail if the user is not authenticated or if their is a MySQL error.
  *********************/
- func ReplaceHandler(w http.ResponseWriter, r *http.Request) {
+func ReplaceHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
@@ -215,21 +208,21 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	pageID := r.Form.Get("pageID")
 
 	cookies := r.Cookies()
-	if(!ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session")){
+	if !ContainsCookie(cookies, "username") || !ContainsCookie(cookies, "session") {
 		fmt.Fprintln(w, `{"valid":false}`)
-		return		
+		return
 	}
 
 	username_cookie, err := r.Cookie("username")
 	if err != nil {
-		fmt.Fprintln(w, `{"valid":false}`)		
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
 
 	username := username_cookie.Value
 	session_cookie, err := r.Cookie("session")
 	if err != nil {
-		fmt.Fprintln(w, `{"valid":false}`)		
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
 
@@ -241,12 +234,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	valid, session, err := Login(conn, username, session)
 	if err != nil {
-		fmt.Fprintln(w, `{"valid":false}`)		
+		fmt.Fprintln(w, `{"valid":false}`)
 		panic(err)
 	}
 
 	if valid {
-		err := UpdatePage(conn, username, name, body, pageID)
+		err = UpdatePage(conn, username, name, body, pageID)
 		if err != nil {
 			fmt.Fprintln(w, `{"valid":false}`)
 			panic(err)
@@ -262,7 +255,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
  * AccessCodeHandler creates and returns a new access code.
  * THIS IS ONLY FOR DEVELOPMENT. DEPRECIATE!
  *********************/
- func AccessCodeHandler(w http.ResponseWriter, r *http.Request) {
+func AccessCodeHandler(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := SQLConnect(false)
 	if err != nil {
@@ -273,6 +266,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	} else {
-		fmt.Fprintln(w, `{"accessCode": "` + accessCode + `", "message" : "Depreciate this API function before release!"}`)
+		fmt.Fprintln(w, `{"accessCode": "`+accessCode+`", "message" : "Depreciate this API function before release!"}`)
 	}
 }

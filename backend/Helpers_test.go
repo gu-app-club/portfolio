@@ -1,23 +1,14 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const TESTING = true
 
-/*********************
- * Helpers.go unit testing
- *********************/
-func Test_IsInt(t *testing.T) {
-	assert.Equal(t, true, IsInt("142134123"))
-	assert.Equal(t, false, IsInt("a"))
-	assert.Equal(t, true, IsInt("1", "-1", "0"))
-	assert.Equal(t, false, IsInt("not int", "-1", "0"))
-}
-
-func Test_Encryption(t *testing.T){
+func Test_Encryption(t *testing.T) {
 	testA := encrypt("hello world", KEY)
 	testB := encrypt("hello world", KEY)
 
@@ -43,14 +34,12 @@ func TestAccessCode_Hashing(t *testing.T) {
 
 func Test_FieldCheck(t *testing.T) {
 
-
 	conn, err := SQLConnect(true)
 	if err != nil {
 		panic(err)
 	}
 
-
-	params := FieldCheck(conn, "test","test@gmail.com","","test");
+	params := FieldCheck(conn, "test", "test@gmail.com", "", "test")
 	assert.Equal(t, false, params.Valid)
 	assert.Equal(t, false, params.Username.Valid)
 	assert.Equal(t, "Username taken.", params.Username.Message[0])
@@ -64,7 +53,7 @@ func Test_FieldCheck(t *testing.T) {
 	assert.Equal(t, false, params.AccessCode.Valid)
 	assert.Equal(t, "Access code invalid.", params.AccessCode.Message[0])
 
-	params = FieldCheck(conn, "","testgmail.com","","");
+	params = FieldCheck(conn, "", "testgmail.com", "", "")
 	assert.Equal(t, false, params.Valid)
 	assert.Equal(t, false, params.Username.Valid)
 	assert.Equal(t, "Username cannot be empty.", params.Username.Message[0])
