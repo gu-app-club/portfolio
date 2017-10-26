@@ -3,31 +3,30 @@ let router = express.Router();
 let sql = require("./networkutil")
 
 //Page Handler
-router.get('/pages/:pageID/users/:userID', function (req, res, next) {
+router.get('/pages/:pageID/users/:userID', async function (req, res, next) {
   let connection = sql.SQLConnect(false);
-  sql.GetPage(connection, req.params.pageID, req.params.userID, function (error, results, fields) {
-    if (error) res.send(error);
-    res.send(results[0]);
-  });
+  let response = await sql.GetPage(connection, req.params.pageID, req.params.userID);
+  res.send(response);
 });
 
 //Book Handler
-router.get('/pages/:count/:offset', function (req, res, next) {
+router.get('/pages/:count/:offset', async function (req, res, next) {
   let offset = parseInt(req.params.offset);
   let count = parseInt(req.params.count);
-  let connection = sql.SQLConnect(false);
-  sql.GetBook(connection, offset, count, function (error, results, fields) {
-    if (error) res.send(error);
-    res.send({pages: results, count: count, offset: offset, length: results.length});
+  let connection = sql.SQLConnect(false).catch(function(error){
+    throw error;
   });
+  let response = await sql.GetBook(connection, offset, count).catch(function(error){
+    throw error;
+  });
+
+  res.send(response);
 });
 
 //Register Handler
-router.post('/register', function (req, res, next) {
+router.post('/register', async function (req, res, next) {
   let connection = sql.SQLConnect(false);
-  sql.Register(connection, req.body.username, req.body.email, req.body.accessCode, req.body.password, function(error, results, fields){
-    //TODO field check
-  });
+  await sql.Register(connection, req.body.username, req.body.email, req.body.accessCode, req.body.password);
 });
 
 //Login Handler

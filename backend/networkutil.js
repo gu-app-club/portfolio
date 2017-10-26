@@ -1,28 +1,34 @@
-let mysql = require('mysql');
-let credentials = require("./constants");
-let hash = require('password-hash');
-let uuid = require('uuid/v4')
+const mysql = require('mysql2');
+const credentials = require("./constants");
+const hash = require('password-hash');
+const uuid = require('uuid/v4')
 module.exports = {
-    SQLConnect: function (testing) {
-        return mysql.createConnection({
+    SQLConnect: async function (testing) {
+        return await mysql.createConnection({
             host: credentials.SQLURL,
             user: credentials.SQLUSER,
             password: credentials.SQLPASS,
             database: (testing ? credentials.TEST_DBNAME : credentials.DBNAME)
+        }).catch(function(error){
+            throw error;
         });
     },
 
-    GetPage: function (connection, pageID, userID, callback) {
-        connection.query('SELECT name, author, body FROM pages WHERE pageID = ? AND userID = ?', [pageID, userID], callback);
+    GetPage: async function (connection, pageID, userID) {
+        let result = await connection.execute('SELECT name, author, body FROM pages WHERE pageID = ? AND userID = ?', [pageID, userID]).catch(function(error){
+            throw error;
+        });
+        return result[0];
     },
 
-    GetBook: function (connection, offset, count, callback){
-        connection.query('SELECT name, author, body, pageID, userID FROM pages LIMIT ?, ?', [offset * count, count], callback);
+    GetBook: async function (connection, offset, count){
+        let result = connection.execute('SELECT name, author, body, pageID, userID FROM pages LIMIT ?, ?', [offset * count, count]);
+        return {pages: results, count: count, offset: offset, length: results.length};
     },
 
-    Register: function (connection, username, email, accessCode, password, callback){
+    Register: async function (connection, username, email, accessCode, password){
         password = hash.generate(password);
         session = uuid();
-        connection.query('INSERT INTO users (userID, username, email, access_code, password, session) VALUES (NULL, ?, ?, ?, ?, ?)', [username, email, accessCode, password, session], callback);
+        await connection.execute('INSERT INTO users (userID, username, email, access_code, password, session) VALUES (NULL, ?, ?, ?, ?, ?)', [username, email, accessCode, password, session]);
     }
 };
