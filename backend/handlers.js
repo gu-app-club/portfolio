@@ -4,7 +4,7 @@ let sql = require("./networkutil")
 
 //Page Handler
 router.get('/pages/:pageID/users/:userID', async function (req, res, next) {
-  let connection = sql.SQLConnect(false);
+  let connection = await sql.SQLConnect(false);
   let response = await sql.GetPage(connection, req.params.pageID, req.params.userID);
   res.send(response);
 });
@@ -13,19 +13,17 @@ router.get('/pages/:pageID/users/:userID', async function (req, res, next) {
 router.get('/pages/:count/:offset', async function (req, res, next) {
   let offset = parseInt(req.params.offset);
   let count = parseInt(req.params.count);
-  let connection = sql.SQLConnect(false).catch(function(error){
-    throw error;
-  });
-  let response = await sql.GetBook(connection, offset, count).catch(function(error){
-    throw error;
-  });
+  let connection = await sql.SQLConnect(false);
+  let response = await sql.GetBook(connection, offset, count);
 
   res.send(response);
 });
 
 //Register Handler
 router.post('/register', async function (req, res, next) {
-  let connection = sql.SQLConnect(false);
+  let connection = await sql.SQLConnect(false);
+
+  //field check
   await sql.Register(connection, req.body.username, req.body.email, req.body.accessCode, req.body.password);
 });
 
