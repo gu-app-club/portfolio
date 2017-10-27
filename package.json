@@ -35,7 +35,7 @@
   "scripts": {
     "dev": "cross-env DEBUG=*,-babel node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "cross-env NODE_ENV=production node server.js",
     "prod-start": "next build; next start",
     "lint": "./node_modules/.bin/eslint src pages"
   },

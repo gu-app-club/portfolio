@@ -38,7 +38,7 @@ expressServer.get("*", (req, res) => {
 });
 
 // Setup port
-const port = normalizePort(process.env.PORT || "8080");
+const port = normalizePort(process.env.PORT || "3000");
 expressServer.set("port", port);
 
 // Launch server

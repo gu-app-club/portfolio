@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api";
+const BASE_URL = "http://localhost:80/api";
 const USER_ROUTE = "/users";
 const REGISTER_ROUTE = "/register";
 const PAGE_ROUTE = "/pages";
