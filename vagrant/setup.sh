@@ -27,7 +27,6 @@ sudo -E apt-get -yqq install --no-install-recommends \
     libmysqlclient-dev \
     mysql-server-5.7 \
     nodejs \
-    dos2unix \
 
 sudo npm update -g npm
 sudo npm install -g yarn
@@ -37,25 +36,6 @@ git config --global push.default simple
 
 echo '-----> Configuring NPM'
 sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
-
-echo '-----> Removing ^M line-endings'
-dos2unix ~/gu-port/backend/setup.sh 
-dos2unix ~/gu-port/backend/build.sh 
-
-echo '-----> Installing golang'
-wget -q https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.9.1.linux-amd64.tar.gz
-rm go1.9.1.linux-amd64.tar.gz
-
-echo '-----> Configuring GOPATH'
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-
-echo '-----> Installing go dependencies'
-/home/vagrant/gu-port/backend/setup.sh
-
-echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
 
 echo '-----> Adding aliases' 
 echo "alias start='sudo sh ~/gu-port/scripts/start.sh'" >> ~/.bashrc
@@ -75,8 +55,14 @@ mysql -u root -e 'CREATE DATABASE IF NOT EXISTS gu_port_dev'
 mysql -u root gu_port_testing < $SRC_DIR/vagrant/gu-port-testing.sql
 mysql -u root gu_port_dev < $SRC_DIR/vagrant/gu-port-dev.sql
 
-echo '-----> Installing npm dependencies'
-cd ./frontend
+echo '-----> Installing frontend npm dependencies'
+cd $SRC_DIR/frontend
+sudo yarn autoclean
+sudo yarn install
+cd ~
+
+echo '-----> Installing backend npm dependencies'
+cd $SRC_DIR/backend
 sudo yarn autoclean
 sudo yarn install
 cd ~
