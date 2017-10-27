@@ -4,7 +4,7 @@
 # Make non-zero exit codes & other errors fatal.
 set -euo pipefail
 
-SRC_DIR="$HOME/gu-port"
+SRC_DIR="$HOME/portfolio"
 cd "$SRC_DIR"
 
 # Suppress prompts during apt-get invocations.
@@ -35,7 +35,7 @@ echo '-----> Configuring Git 2.0'
 git config --global push.default simple
 
 echo '-----> Configuring NPM'
-sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
+#sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
 
 echo '-----> Adding aliases' 
 echo "alias start='sudo sh ~/gu-port/scripts/start.sh'" >> ~/.bashrc
@@ -56,7 +56,13 @@ mysql -u root gu_port_testing < $SRC_DIR/vagrant/gu-port-testing.sql
 mysql -u root gu_port_dev < $SRC_DIR/vagrant/gu-port-dev.sql
 
 echo '-----> Installing frontend npm dependencies'
-cd $SRC_DIR
+cd $SRC_DIR/frontend
+sudo yarn autoclean
+sudo yarn install
+cd ~
+
+echo '-----> Installing backend npm dependencies'
+cd $SRC_DIR/backend
 sudo yarn autoclean
 sudo yarn install
 cd ~
