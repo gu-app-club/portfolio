@@ -1,7 +1,6 @@
 const mysql = require('mysql2/promise');
 const credentials = require("./constants");
-const hash = require('password-hash');
-const uuid = require('uuid/v4')
+
 module.exports = {
     SQLConnect: async function (testing) {
         return await mysql.createConnection({
@@ -22,14 +21,41 @@ module.exports = {
         return {pages: results, count: count, offset: offset, length: results.length};
     },
 
-    Register: async function (connection, username, email, accessCode, password){
-        password = hash.generate(password);
-        session = uuid();
+    Register: async function (connection, username, email, accessCode, password, session){
         await connection.execute('INSERT INTO users (userID, username, email, access_code, password, session) VALUES (NULL, ?, ?, ?, ?, ?)', [username, email, accessCode, password, session]);
+        return session;
     },
 
     FieldExists: async function (connection, field, value, table){
-        let [rows, fields] = await connection.query('`SELECT '+field+' FROM '+table+' WHERE '+field+'= ?', value);
+        let [rows, fields] = await connection.query('SELECT '+field+' FROM '+table+' WHERE '+field+'= ?', [value]);
         return (rows.length > 0);
+    },
+
+    RemoveAccessCode: async function(connection, accessCode){
+        await connection.query('UPDATE access_codes SET valid=0 WHERE access_code = ? LIMIT 1', [accessCode]);
+    },
+
+    AccessCodeValid: async function(connection, accessCode){
+        let [rows, fields] = await connection.query('SELECT access_code FROM access_codes WHERE access_code = ? AND valid = 1', [accessCode]);
+        return (rows.length > 0);
+    },
+
+    GetUserWithKey: async function(connection, key){
+        let [rows, fields] = await connection.query('SELECT * FROM users WHERE email = ? OR password = ?', [key, key]);
+        return rows[0];
+    },
+
+    ChangeSession: async function(connection, userID, session){
+        await connection.query('UPDATE users SET session = ? WHERE userID = ? LIMIT 1', [session, userID]);
+    },
+
+    InsertPage: async function(connection, userID, username, name, body){
+        await connection.query('INSERT INTO pages (pageID, userID, name, author, body) VALUES (NULL, ?, ?, ?, ?)', [userID, name, username, body]);
+    },
+
+    CreateAccessCode: async function(connection, accessCode){
+        await connection.query('INSERT INTO access_codes(access_code, valid) VALUES (?, 1)', [accessCode]);
     }
+
+
 };

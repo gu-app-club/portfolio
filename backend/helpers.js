@@ -2,7 +2,7 @@ const sql = require('./networkutil');
 const isemail = require('isemail');
 
 module.exports = {
-    FieldCheck = async function(connection, username, email, pasword, accessCode){
+    FieldCheck : async function(connection, username, email, password, accessCode){
         let params = {
             "username":{
                "valid":true,
@@ -37,7 +37,7 @@ module.exports = {
             params.email.valid = false;
             params.email.message.push("Email taken.");
         }
-        if(!Isemail.validate(email)){
+        if(!isemail.validate(email)){
             params.valid = false;
             params.email.valid = false;
             params.email.message.push("Invalid email.");
@@ -49,6 +49,11 @@ module.exports = {
             params.password.message.push("Password cannot be empty.");
         }
 
-        //TODO access code validation
+        if(!(await sql.AccessCodeValid(connection, accessCode)) || accessCode.length == 0){
+            params.valid = false;
+            params.accessCode.valid = false;
+            params.accessCode.message.push("Access code invalid.");
+        }
+        return params;
     }
 }

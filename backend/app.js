@@ -11,31 +11,20 @@ var app = express();
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+
+
 app.use(logger('dev'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(function(req, res, next){
-  var protocol = req.protocol;
-  var hostHeaderIndex = req.rawHeaders.indexOf('Host') + 1;
-  var host = hostHeaderIndex?req.rawHeaders[hostHeaderIndex]:undefined;
-  Object.defineProperty(req, 'origin', {
-  get: function(){
-    if( !host ){
-      return req.headers.referer?req.headers.referer.substring(0, req.headers.referer.length-1):undefined;  
-    }else{
-      return protocol + '://' + host;
-    }
-  }
-  });
-  next();
-});
+
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', req.origin);
+  res.setHeader('Access-Control-Allow-Origin', (req.get('origin') ? req.get('origin') : '*'));
   
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
