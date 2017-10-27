@@ -41,7 +41,8 @@ module.exports = {
     },
 
     GetUserWithKey: async function(connection, key){
-        let [rows, fields] = await connection.query('SELECT * FROM users WHERE email = ? OR password = ?', [key, key]);
+        let [rows, fields] = await connection.query('SELECT * FROM users WHERE email = ? OR username = ?', [key, key]);
+	console.log(rows);
         return rows[0];
     },
 
