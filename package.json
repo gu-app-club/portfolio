@@ -35,8 +35,8 @@
   "scripts": {
     "dev": "cross-env DEBUG=*,-babel node server.js",
     "build": "next build",
+    "heroku-postbuild": "next build",
     "start": "NODE_ENV=production && node server.js",
-    "prod-start": "next build; next start",
     "lint": "./node_modules/.bin/eslint src pages"
   },
   "devDependencies": {
