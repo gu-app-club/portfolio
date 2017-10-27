@@ -46,5 +46,8 @@
     "cross-env": "^5.1.1",
     "eslint": "^4.9.0",
     "eslint-plugin-react": "^7.4.0"
+  },
+  "engines": {
+    "node": "8.1.x"
   }
 }
