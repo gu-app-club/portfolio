@@ -16,10 +16,10 @@ sudo rm -f /etc/apt/sources.list.d/ondrej-ubuntu-mysql-5_6-xenial.list
 if [[ ! -f /etc/apt/sources.list.d/nodesource.list ]]; then
     echo '-----> Adding APT repository for Node.js'
     curl -sSf https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-    echo 'deb https://deb.nodesource.com/node_7.x xenial main' | sudo tee /etc/apt/sources.list.d/nodesource.list > /dev/null
+    echo 'deb https://deb.nodesource.com/node_8.x xenial main' | sudo tee /etc/apt/sources.list.d/nodesource.list > /dev/null
 fi
 
-echo '-----> Installing/updating APT packages'
+echo '-----> Installing/updating APT packages'  
 sudo -E apt-get -yqq update
 sudo -E apt-get -yqq install --no-install-recommends \
     git \
