@@ -27,6 +27,7 @@
     "react-markdown": "^2.5.0",
     "react-modal": "^3.0.3",
     "read-blob": "^1.1.0",
+    "sequelize": "^4.19.0",
     "serve-favicon": "~2.4.5",
     "sillyname": "^0.1.0",
     "styled-components": "^2.2.1",
@@ -47,6 +48,6 @@
     "eslint-plugin-react": "^7.4.0"
   },
   "engines": {
-    "node": "^8.8.1"
+    "node": "^8.x.x"
   }
 }
