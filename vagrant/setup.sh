@@ -56,7 +56,13 @@ mysql -u root gu_port_testing < $SRC_DIR/vagrant/gu-port-testing.sql
 mysql -u root gu_port_dev < $SRC_DIR/vagrant/gu-port-dev.sql
 
 echo '-----> Installing frontend npm dependencies'
-cd $SRC_DIR
+cd $SRC_DIR/frontend
+sudo yarn autoclean
+sudo yarn install
+cd ~
+
+echo '-----> Installing backend npm dependencies'
+cd $SRC_DIR/backend
 sudo yarn autoclean
 sudo yarn install
 cd ~
