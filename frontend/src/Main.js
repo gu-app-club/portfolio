@@ -17,7 +17,7 @@ class App extends React.Component {
       <Themed>
         <AppWrapper>
           <Head title="Portfolio" />
-          <TopBar author={this.props.author} />
+          <TopBar />
           <Main>
             <ArticleList articles={this.props.articles} />
           </Main>

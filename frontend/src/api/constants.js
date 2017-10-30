@@ -10,7 +10,6 @@ const PAGE_ROUTE = "/pages";
 const PAGE_LIST_ROUTE = "/pages";
 const LOGIN_ROUTE = "/login";
 const UPLOAD_ROUTE = "/pages/new"
-const USER_PAGE_ROUTE = "/users"
 export {
   BASE_URL,
   USER_ROUTE,
@@ -18,6 +17,5 @@ export {
   REGISTER_ROUTE,
   PAGE_LIST_ROUTE,
   LOGIN_ROUTE,
-  UPLOAD_ROUTE,
-  USER_PAGE_ROUTE
+  UPLOAD_ROUTE
 };
