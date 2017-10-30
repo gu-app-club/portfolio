@@ -76,4 +76,10 @@ router.get('/access/new', async function (req, res, next) {
   res.send({accessCode: accessCode});
 });
 
+router.get('/users/:userID', async function (req, res, next){
+  let connection = await sql.SQLConnect();
+  let response = await sql.GetUserPages(connection, req.params.userID);
+  res.send(response);
+});
+
 module.exports = router;
