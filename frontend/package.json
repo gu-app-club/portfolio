@@ -24,7 +24,7 @@
     "dev": "next",
     "build": "next build",
     "heroku-postbuild": "next build",
-    "start": "NODE_ENV=production && node server.js",
+    "start": "next start",
     "lint": "./node_modules/.bin/eslint src pages"
   },
   "devDependencies": {
