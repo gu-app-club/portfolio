@@ -56,6 +56,11 @@ module.exports = {
 
     CreateAccessCode: async function(connection, accessCode){
         await connection.query('INSERT INTO access_codes(access_code, valid) VALUES (?, 1)', [accessCode]);
+    },
+
+    GetUserPages: async function (connection, userID){
+        let [results, fields] = await connection.query('SELECT * from pages WHERE userID = ?', [userID]);
+        return results;
     }
 
 
