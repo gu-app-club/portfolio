@@ -6,8 +6,7 @@ import {
   PAGE_ROUTE,
   PAGE_LIST_ROUTE,
   LOGIN_ROUTE,
-  UPLOAD_ROUTE,
-  USER_PAGE_ROUTE
+  UPLOAD_ROUTE
 } from "./constants";
 import querystring from "querystring";
 axios.defaults.withCredentials = true;
@@ -17,10 +16,6 @@ function getPage(userID, pageID) {
   return axios.get(
     BASE_URL + USER_ROUTE + `/${userID}` + PAGE_ROUTE + `/${pageID}`
   );
-}
-
-function getUserPage(userID){
-  return axios.get(BASE_URL + USER_PAGE_ROUTE + `/${userID}`);
 }
 
 function getPageList(count, offset) {
@@ -67,4 +62,4 @@ function postUpload(title, body) {
   });
 }
 
-export default { getPage, getPageList, postRegister, postLogin, postUpload, getUserPage };
+export default { getPage, getPageList, postRegister, postLogin, postUpload };
