@@ -12,12 +12,12 @@ module.exports = {
     },
 
     GetPage: async function (connection, pageID, userID) {
-        const[results, fields] = await connection.query('SELECT name, author, body FROM pages WHERE pageID = ? AND userID = ?', [pageID, userID]);
+        const[results, fields] = await connection.query('SELECT * FROM pages WHERE pageID = ? AND userID = ?', [pageID, userID]);
         return results[0];
     },
 
     GetBook: async function (connection, offset, count){
-        const[results, fields] = await connection.query('SELECT name, author, body, pageID, userID FROM pages LIMIT ?, ?', [offset * count, count]);
+        const[results, fields] = await connection.query('SELECT * FROM pages LIMIT ?, ?', [offset * count, count]);
         return {pages: results, count: count, offset: offset, length: results.length};
     },
 
