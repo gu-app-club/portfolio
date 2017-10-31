@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 
 export default class extends React.Component {
   static async getInitialProps({ query }) {
+    console.log(query);
     let data;
     try {
       data = await api.getUserPage(query.userID);
@@ -17,10 +18,10 @@ export default class extends React.Component {
         err
       );
 
-      return {articles: []}; // No response from backend :(
+      return { articles: [] }; // No response from backend :(
     }
-
-    return { articles: data.data };
+    
+    return { articles: data.data, author: (data.data && data.data.length > 0) ? data.data[0].author : null }
   }
 
   static propTypes = {
@@ -32,7 +33,7 @@ export default class extends React.Component {
   render() {
     return (
       <Centered>
-        <Main author={this.props.articles[0].author} articles={this.props.articles} />
+        <Main author={this.props.author} articles={this.props.articles} />
       </Centered>
     );
   }
