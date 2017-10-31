@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 
 export default class extends React.Component {
   static async getInitialProps({ query }) {
-    console.log(query);
     let data;
     try {
       data = await api.getUserPage(query.userID);

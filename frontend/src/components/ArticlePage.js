@@ -25,7 +25,15 @@ class App extends React.Component {
             <div>
                 <div>
                     <h1 style={{marginBottom: "0"}}>{this.props.article.name}</h1>
-                    <p>By <Link href={{ pathname: "/u/" + this.props.article.userID }}>{this.props.article.author}</Link></p>
+                    <p>By <Link prefetch 
+                        as={ "/u/" + this.props.article.userID} 
+                        href={{ 
+                          pathname: "/user",
+                          query:{ 
+                            userID: this.props.article.userID 
+                          } 
+                        }}>{this.props.article.author}</Link>
+                  </p>
                 </div>
                 <Markdown src={this.props.article.body} key={`${this.props.article.pageID}-mark`} />
             </div>

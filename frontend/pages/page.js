@@ -6,7 +6,6 @@ import ArticlePage from "../src/components/ArticlePage";
 
 export default class extends React.Component {
   static async getInitialProps({ query }) {
-    console.log(query);
     let data;
     try {
       data = await api.getPage(query.pageID, query.userID)
