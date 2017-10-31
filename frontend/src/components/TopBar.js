@@ -28,7 +28,7 @@ class TopBar extends React.Component {
   render() {
     return (
       <TopBarWrapper>
-        <DirectoryTitle author={this.props.author}/>
+        <DirectoryTitle article={this.props.article} author={this.props.author}/>
         {/* Add new post */}
         <RedirectToLogin href="/new" prefetch>
           <Icon>
@@ -42,7 +42,14 @@ class TopBar extends React.Component {
 
 function DirectoryTitle(props){
   const author = props.author;
-  if(author != null){
+  const article = props.article;
+  if(article != null){
+    return (
+      <Title>
+        <code>{"$ cat ~/gonzaga/" + author + "/" + article}</code>
+      </Title>
+    );
+  }else if(author != null){
     return (
       <Title>
         <code>{"$ cd ~/gonzaga/" + author + " && pwd "}</code>

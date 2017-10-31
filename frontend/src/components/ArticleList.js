@@ -37,18 +37,15 @@ class ArticleList extends React.Component {
         .article-wrapper { 
           cursor: pointer;
           background-color: #fff;
-          -webkit-transition: -webkit-box-shadow .25s;
-          transition: box-shadow .25s, -webkit-box-shadow .25s;
-          border-radius: 2px;
-          -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
-          box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+          border-radius: 5px;
           padding: 24px;
           margin-bottom: 25px;
           height: 400px;
+          border: 1px solid #d4dadd;
         }
 
         .article-wrapper:hover{
-          box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 20px 20px rgba(0, 0, 0, 0.22);
+          box-shadow: 0 0 0 #d4dadd, 0 10px 10px #d4dadd;
         }
 
         .markdown-wrapper{

@@ -13,9 +13,9 @@ import querystring from "querystring";
 axios.defaults.withCredentials = true;
 import Cookies from "../lib/Cookies";
 
-function getPage(userID, pageID) {
+function getPage(pageID, userID) {
   return axios.get(
-    BASE_URL + USER_ROUTE + `/${userID}` + PAGE_ROUTE + `/${pageID}`
+    BASE_URL + PAGE_ROUTE + `/${pageID}` + USER_ROUTE + `/${userID}`
   );
 }
 
