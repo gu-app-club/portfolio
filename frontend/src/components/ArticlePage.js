@@ -11,7 +11,6 @@ const Main = styled.main`width: 100%;`;
 
 class App extends React.Component {
   constructor(props) {
-    console.log(props);
     super(props);
   }
 
@@ -20,7 +19,7 @@ class App extends React.Component {
       <Themed>
         <AppWrapper>
           <Head title="Portfolio" />
-          <TopBar article={this.props.article.name} author={this.props.article.author}/>
+          <TopBar userID={this.props.article.userID} article={this.props.article.name} author={this.props.article.author}/>
           <Main>
             <div>
                 <div>

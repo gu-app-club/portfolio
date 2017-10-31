@@ -28,7 +28,7 @@ class TopBar extends React.Component {
   render() {
     return (
       <TopBarWrapper>
-        <DirectoryTitle article={this.props.article} author={this.props.author}/>
+        <DirectoryTitle userID={this.props.userID} article={this.props.article} author={this.props.author}/>
         {/* Add new post */}
         <RedirectToLogin href="/new" prefetch>
           <Icon>
@@ -43,16 +43,61 @@ class TopBar extends React.Component {
 function DirectoryTitle(props){
   const author = props.author;
   const article = props.article;
+  const userID = props.userID;
   if(article != null){
     return (
       <Title>
-        <code>{"$ cat ~/gonzaga/" + author + "/" + article}</code>
+        <style jsx global>{`
+        .breadcrumb { 
+          cursor:pointer;
+          -webkit-transition: color 0.25s, font-size 0.25s;
+          -moz-transition: color 0.25s, font-size 0.25s;
+          -o-transition: color 0.25s, font-size 0.25s;
+          transition: color 0.25s, font-size 0.25s;
+        }
+        
+        .breadcrumb:hover{
+          font-size:26px;
+          color: #3498db;
+        }`}</style>
+
+        <code>
+          {"$ cat ~/"}
+          <Link prefetch href={'/'}><span className="breadcrumb">{"gonzaga"}</span></Link>
+          {"/"}
+          <Link prefetch
+            as={ "/u/" + userID}
+            href={{ 
+              pathname: "/user",
+              query:{ 
+                userID: userID 
+              } 
+             }}><span className="breadcrumb">{author}</span></Link>
+          {"/"}
+         {article}
+        </code>
       </Title>
     );
   }else if(author != null){
     return (
       <Title>
-        <code>{"$ cd ~/gonzaga/" + author + " && pwd "}</code>
+        <style jsx global>{`
+        .breadcrumb { 
+          cursor:pointer;
+          -webkit-transition: color 0.25s, font-size 0.25s;
+          -moz-transition: color 0.25s, font-size 0.25s;
+          -o-transition: color 0.25s, font-size 0.25s;
+          transition: color 0.25s, font-size 0.25s;
+        }
+        
+        .breadcrumb:hover{
+          font-size:26px;
+          color: #3498db;
+        }`}</style>
+        <code>
+          {"$ cd ~/"}
+          <Link prefetch href={'/'}><span className="breadcrumb">{"gonzaga"}</span></Link>
+          {"/" + author + " && pwd "}</code>
       </Title>
     );
   }else{
