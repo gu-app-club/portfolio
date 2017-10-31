@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "bulma": "^0.6.0",
+    "express": "^4.16.2",
     "feather-icons": "^3.3.0",
     "js-cookie": "^2.1.4",
     "next": "^4.0.4",
@@ -21,10 +22,11 @@
     "yarn": "^1.2.1"
   },
   "scripts": {
-    "dev": "next",
+    "dev": "NODE_ENV=development node server.js",
+    "prod": "next build; NODE_ENV=production node server.js",
     "build": "next build",
     "heroku-postbuild": "next build",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "./node_modules/.bin/eslint src pages"
   },
   "devDependencies": {

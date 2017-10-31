@@ -42,7 +42,6 @@ class TopBar extends React.Component {
 
 function DirectoryTitle(props){
   const author = props.author;
-  console.log("the author is: " + author);
   if(author != null){
     return (
       <Title>
