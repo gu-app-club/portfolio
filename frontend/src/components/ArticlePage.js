@@ -3,6 +3,7 @@ import Head from "./Head.js";
 import TopBar from "./TopBar.js";
 import Themed from "../Theme";
 import Link from "next/link";
+import Footer from "./Footer.js"
 import Markdown from "./Markdown.js";
 
 
@@ -36,6 +37,7 @@ class App extends React.Component {
                 </div>
                 <Markdown src={this.props.article.body} key={`${this.props.article.pageID}-mark`} />
             </div>
+            <Footer/>
           </Main>
         </AppWrapper>
       </Themed>
