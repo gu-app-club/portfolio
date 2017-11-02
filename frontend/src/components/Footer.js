@@ -1,10 +1,11 @@
 const Footer = (props) => (
     <div>
       <div style={{
-        position: 'absolute',
+        position: 'fixed',
         right: '0',
         bottom: '0',
         left: '0',
+        background:'white',
         padding: '1rem',
         textAlign: 'center'
       }} className="footer">{"Made by "} <a href="https://github.com/gu-app-club/portfolio">GU MAD</a>{"."}</div>
