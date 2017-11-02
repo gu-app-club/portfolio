@@ -1,5 +1,5 @@
-const Flash = ({ message }) => (
-  <div className="alert alert-danger">{message}</div>
+const Flash = (props) => (
+  <div className="alert alert-danger">{props.children}</div>
 );
 
 export default Flash;

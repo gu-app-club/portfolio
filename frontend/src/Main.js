@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Head from "./components/Head.js";
+import Footer from "./components/Footer.js"
 import ArticleList from "./components/ArticleList.js";
 import TopBar from "./components/TopBar.js";
 import Themed from "./Theme";
@@ -21,6 +22,7 @@ class App extends React.Component {
           <Main>
             <ArticleList articles={this.props.articles} />
           </Main>
+          <Footer/>
         </AppWrapper>
       </Themed>
     );

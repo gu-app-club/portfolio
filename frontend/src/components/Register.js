@@ -85,11 +85,9 @@ class Register extends React.Component {
   render() {
     return (
       <AppWrapper>
-        {
-          this.state.flashVisible
-            ? <Flash message={this.state.errorMsg}/>
-            : null
-        }
+        {this.state.flashVisible ? (
+            <Flash>{this.state.errorMsg}</Flash>
+          ) : null}
         <form onSubmit= {this.onSubmit}>
           <label htmlFor="name"> Name </label>
           <input type="text" id="name" name="name" onChange={this.onChange} required/>
@@ -117,7 +115,7 @@ class Register extends React.Component {
 const RegisterForm = () => (
   <AppWrapper>
     <TitleWithMargin>Register</TitleWithMargin>
-    <p>Sign up for an account and you can upload your postys</p>
+    <p>Sign up for an account and you can upload your posts.</p>
     <Register />
   </AppWrapper>
 );

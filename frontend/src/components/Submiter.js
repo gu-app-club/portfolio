@@ -2,9 +2,11 @@ import Head from "./Head";
 import Themed from "../Theme";
 import styled from "styled-components";
 import Title from "./Title";
+import Router from "next/router";
 import Link from "next/link";
 import readBlob from "read-blob";
 import api from "../api";
+import Flash from "./Flash";
 import Cookies from "../lib/Cookies";
 
 const AppWrapper = styled.div`width: 100%;`;
@@ -18,31 +20,40 @@ class SubmitForm extends React.Component {
       reason: "",
       uploadedText: "",
       title: "",
-      author: ""
+      flashVisible: false,
     };
 
     this.onUserUpload = this.onUserUpload.bind(this);
     this.onUserSubmit = this.onUserSubmit.bind(this);
-    this.updateAuthorValue = this.updateAuthorValue.bind(this);
     this.updateTitleValue = this.updateTitleValue.bind(this);
+    
 
   }
 
   onUserSubmit() {
-    api.postUpload(this.state.title, this.state.uploadedText).then(({data}) => {
-      if(data.valid){
-        Cookies.updateSession(data.session)
-      }else{
-        //TODO error handling.
-      }
-    });
+    try{
+      api.postUpload(this.state.title, this.state.uploadedText).then(({data}) => {
+        if(data.valid){
+          Cookies.updateSession(data.session);
+          Router.replace("/");
+        }else{
+          this.setState({
+            flashVisible: true
+          });
+        }
+      });
+    }catch(e){
+      this.setState({
+        flashVisible: true
+      });
+    }
   }
 
   onUserUpload(event) {
     const file = event.target.files[0];
 
     // For the moment, only let the user upload markdown files
-    if (!file.name.endsWith("md")) {
+    if (!file.name.toLowerCase().endsWith("md")) {
       this.setState({
         disabled: true,
         reason:
@@ -60,18 +71,15 @@ class SubmitForm extends React.Component {
   updateTitleValue(evt){
     this.setState({title: evt.target.value});
   }
-  updateAuthorValue(evt){
-    this.setState({author: evt.target.value});
-  }
 
   render() {
     return (
       <div>
+        {this.state.flashVisible ? (
+            <Flash>Something terrible has happened! Maybe you should <a href="/login">login</a>?</Flash>
+          ) : null}
         <label htmlFor="title"> Title </label>
         <input type="text" onChange={evt => this.updateTitleValue(evt)} placeholder="Super Cool iOS App" id="title" />
-
-        <label htmlFor="author"> Author </label>
-        <input type="text" onChange={evt => this.updateAuthorValue(evt)} placeholder="George" id="author" />
 
         <label htmlFor="file"> Markdown File </label>
         <input type="file" onChange={this.onUserUpload} />
