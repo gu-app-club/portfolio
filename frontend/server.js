@@ -1,6 +1,6 @@
 const express = require('express')
 const next = require('next')
-const subdomain = require('wildcard-subdomains');
+const subdomain = require('./src/lib/Subdomain');
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
@@ -9,7 +9,7 @@ const port = dev ? 3000 : 80;
 
 app.prepare().then(() => {
   const server = express();
-  
+
   server.use(subdomain({namespace: 'u', whitelist: ['www'] }));  
 
   server.get('/u/:userID', (req, res) => {
