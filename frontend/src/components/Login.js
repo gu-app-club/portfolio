@@ -50,7 +50,7 @@ class Login extends React.Component {
     api.postLogin(this.state.email, this.state.password).then(({ data }) => {
       if (!data.valid) {
         this.setState({
-          errorMsg: "Email and Password does not match!!!",
+          errorMsg: "Email and Password does not match!",
           flashVisible: true
         });
         return;
@@ -90,7 +90,7 @@ class Login extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           {this.state.flashVisible ? (
-            <Flash message={this.state.errorMsg} />
+            <Flash>{this.state.errorMsg}</Flash>
           ) : null}
           <label htmlFor="email"> Email </label>
           <input
