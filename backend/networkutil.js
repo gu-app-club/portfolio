@@ -59,7 +59,7 @@ module.exports = {
     },
 
     GetUserPages: async function (connection, userID){
-        let [results, fields] = await connection.query('SELECT * from pages WHERE userID = ?', [userID]);
+        let [results, fields] = await connection.query('SELECT * from pages WHERE userID = ? OR author = ?', [userID, userID]);
         return results;
     }
 

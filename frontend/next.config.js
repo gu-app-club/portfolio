@@ -1,3 +1,4 @@
+const isProd = process.env.NODE_ENV === 'production'
 module.exports = {
   webpackDevMiddleware: config => {
     // Solve compiling problem via vagrant
@@ -6,5 +7,6 @@ module.exports = {
       aggregateTimeout: 300 // delay before rebuilding
     };
     return config;
-  }
+  },
+  assetPrefix: isProd ? 'http://gupwd.com' : 'http://localhost:3000'
 };
