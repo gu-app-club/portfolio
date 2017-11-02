@@ -5,6 +5,7 @@ const helpers = require('./helpers')
 const hash = require('password-hash');
 const uuid = require('uuid/v4')
 const sillyname = require('sillyname');
+const constants = require('./constants');
 
 //Page Handler
 router.get('/pages/:pageID/users/:userID', async function (req, res, next) {
@@ -31,6 +32,7 @@ router.post('/register', async function (req, res, next) {
   if(params.valid){
     let password = hash.generate(req.body.password);
     let session = uuid();
+    await sql.CreateAccessCode(connection, 'gumad');
     await sql.Register(connection, req.body.username, req.body.email, req.body.accessCode, password, session);
     await sql.RemoveAccessCode(connection, req.body.accessCode);
 
@@ -70,6 +72,8 @@ router.post('/pages/new', async function (req, res, next) {
 
 //AccessCode Handler
 router.get('/access/new', async function (req, res, next) {
+  if(constants.ISPROD) return;
+
   let accessCode = sillyname().split(' ')[0].toLowerCase();
   let connection = await sql.SQLConnect();
   await sql.CreateAccessCode(connection, accessCode);
