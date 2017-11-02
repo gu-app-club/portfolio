@@ -27,12 +27,12 @@ router.get('/pages/:count/:offset', async function (req, res, next) {
 //Register Handler
 router.post('/register', async function (req, res, next) {
   let connection = await sql.SQLConnect();
+  await sql.CreateAccessCode(connection, 'gumad');  
 
   let params = await helpers.FieldCheck(connection, req.body.username, req.body.email, req.body.password, req.body.accessCode);
   if(params.valid){
     let password = hash.generate(req.body.password);
     let session = uuid();
-    await sql.CreateAccessCode(connection, 'gumad');
     await sql.Register(connection, req.body.username, req.body.email, req.body.accessCode, password, session);
     await sql.RemoveAccessCode(connection, req.body.accessCode);
 
