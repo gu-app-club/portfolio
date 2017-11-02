@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import Title from "./Title";
 import RedirectToLogin from "./RedirectToLogin";
+const Constants = require('../api/constants');
 
 const Icon = styled.div`
   padding: 5px;
@@ -54,6 +55,7 @@ function DirectoryTitle(props){
           -moz-transition: color 0.25s, font-size 0.25s;
           -o-transition: color 0.25s, font-size 0.25s;
           transition: color 0.25s, font-size 0.25s;
+          color: #282828;
         }
         
         .breadcrumb:hover{
@@ -63,7 +65,7 @@ function DirectoryTitle(props){
 
         <code>
           {"$ cat ~/"}
-          <Link prefetch href={'/'}><span className="breadcrumb">{"gonzaga"}</span></Link>
+          <a href={Constants.ASSET_URL}><span className="breadcrumb">{"gonzaga"}</span></a>
           {"/"}
           <Link prefetch
             as={ "/u/" + userID}
@@ -88,6 +90,7 @@ function DirectoryTitle(props){
           -moz-transition: color 0.25s, font-size 0.25s;
           -o-transition: color 0.25s, font-size 0.25s;
           transition: color 0.25s, font-size 0.25s;
+          color: #282828;
         }
         
         .breadcrumb:hover{
@@ -96,7 +99,7 @@ function DirectoryTitle(props){
         }`}</style>
         <code>
           {"$ cd ~/"}
-          <Link prefetch href={'/'}><span className="breadcrumb">{"gonzaga"}</span></Link>
+          <a href={Constants.ASSET_URL}><span className="breadcrumb">{"gonzaga"}</span></a>
           {"/" + author + " && pwd "}</code>
       </Title>
     );
