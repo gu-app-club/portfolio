@@ -63,12 +63,11 @@ class ArticleList extends React.Component {
 
         .readmore{
           position: relative;
-          bottom: 34%;
+          bottom: 150px;
+          height: 150px;
           background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
           filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
-          height: 34%;
         }
-
       `}
         </style>
         {articles}
