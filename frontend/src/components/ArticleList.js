@@ -42,10 +42,14 @@ class ArticleList extends React.Component {
           margin-bottom: 25px;
           height: 400px;
           border: 1px solid #d4dadd;
+          transition: -webkit-transform 0.3s, box-shadow 0.3s;
+          transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .article-wrapper:hover{
-          box-shadow: 0 0 0 #d4dadd, 0 10px 10px #d4dadd;
+          box-shadow: 0 1px 15px rgba(27,31,35,0.15);
+          -webkit-transform: scale(1.025);
+          transform: scale(1.025);        
         }
 
         .markdown-wrapper{
